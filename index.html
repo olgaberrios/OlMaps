@@ -1,383 +1,205 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
 <title>🗺️ OlMaps</title>
-<link rel="preconnect" href="https://fonts.googleapis.com" />
-<link href="https://fonts.googleapis.com/css2?family=Syne:wght@600;800&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet" />
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet"/>
 <style>
-  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-  :root {
-    --bg: #f2ede3;
-    --surface: #faf7f0;
-    --surface2: #e8e0d0;
-    --border: #cec4ae;
-    --border2: #b8ab94;
-    --text: #2a1f10;
-    --muted: #6e5c42;
-    --muted2: #4e3d26;
-    --accent: #2d6a4f;
-    --accent2: #40916c;
-    --accent3: #1b4332;
-    --brown: #7b5e3a;
-    --brown2: #a47c52;
-    --green: #52b788;
-    --amber: #c49a0a;
-    --red: #b83c0c;
-    --orange: #d4712a;
-    --purple: #614880;
-    --teal: #1a6060;
-  }
-  html { font-size: 15px; }
-  body {
-    background: var(--bg);
-    color: var(--text);
-    font-family: 'DM Sans', sans-serif;
-    min-height: 100vh;
-    line-height: 1.5;
-  }
-  h1, h2, h3 { font-family: 'Syne', sans-serif; }
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#f2ede3;
+  --surface:#faf7f0;
+  --surface2:#e8e0d0;
+  --border:#cec4ae;
+  --border2:#b8ab94;
+  --text:#2a1f10;
+  --muted:#6e5c42;
+  --muted2:#4e3d26;
+  --accent:#2d6a4f;
+  --accent2:#40916c;
+  --accent3:#1b4332;
+  --brown:#7b5e3a;
+  --teal:#1a6060;
+  --amber:#c49a0a;
+  --red:#b83c0c;
+  --orange:#d4712a;
+  --purple:#614880;
+}
+html{font-size:15px}
+body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;min-height:100vh;line-height:1.5}
+h1,h2,h3{font-family:'Syne',sans-serif}
+button{font-family:'DM Sans',sans-serif;cursor:pointer;border:none;transition:all .15s}
 
-  /* Layout */
-  .header {
-    background: #1b4332;
-    border-bottom: 3px solid #7b5e3a;
-    padding: 14px 20px;
-    position: sticky; top: 0; z-index: 100;
-  }
-  .header-inner {
-    max-width: 680px; margin: 0 auto;
-    display: flex; align-items: center; gap: 12px;
-  }
-  .logo { flex: 1; }
-  .logo h1 { font-size: 20px; font-weight: 800; letter-spacing: -0.5px; color: #f0ead8; }
-  .logo h1 span { color: #95d5b2; }
-  .logo p { font-size: 11px; color: #74c69d; margin-top: 2px; }
-  .sync-error { color: var(--red) !important; }
+.header{background:var(--accent3);border-bottom:3px solid var(--brown);padding:14px 20px;position:sticky;top:0;z-index:100}
+.header-inner{max-width:680px;margin:0 auto;display:flex;align-items:center;gap:12px}
+.logo{flex:1}
+.logo h1{font-size:20px;font-weight:800;letter-spacing:-.5px;color:#f0ead8}
+.logo h1 span{color:#95d5b2}
+.logo p{font-size:11px;color:#74c69d;margin-top:2px}
+.logo p.err{color:#ffb4a2}
 
-  .main { max-width: 680px; margin: 0 auto; padding: 20px 16px 60px; }
+.main{max-width:680px;margin:0 auto;padding:20px 16px 60px}
 
-  /* Buttons */
-  button { font-family: 'DM Sans', sans-serif; cursor: pointer; border: none; transition: all .15s; }
-  .btn-primary {
-    background: var(--accent); color: #fff;
-    padding: 8px 18px; border-radius: 8px; font-weight: 700; font-size: 13px;
-  }
-  .btn-primary:hover { background: var(--accent2); }
-  .btn-ghost {
-    background: rgba(255,255,255,.12); border: 1px solid rgba(255,255,255,.22);
-    color: #d8f3dc; padding: 7px 13px; border-radius: 8px; font-size: 12px; font-weight: 600;
-  }
-  .btn-ghost:hover { background: rgba(255,255,255,.22); color: #fff; }
-  .btn-ghost-dark {
-    background: var(--surface2); border: 1px solid var(--border2);
-    color: var(--muted2); padding: 6px 13px; border-radius: 8px; font-size: 12px; font-weight: 600;
-  }
-  .btn-ghost-dark:hover { border-color: var(--accent); color: var(--accent); }
-  .btn-danger {
-    background: #fceee8; color: var(--red); border: 1px solid #f0c0a8;
-    padding: 6px 13px; border-radius: 8px; font-size: 12px; font-weight: 600;
-  }
-  .btn-danger:hover { background: #f8ddd0; }
+.btn-primary{background:var(--accent);color:#fff;padding:8px 18px;border-radius:8px;font-weight:700;font-size:13px;border:2px solid var(--accent3)}
+.btn-primary:hover{background:var(--accent2)}
+.btn-ghost{background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.22);color:#d8f3dc;padding:7px 13px;border-radius:8px;font-size:12px;font-weight:600}
+.btn-ghost:hover{background:rgba(255,255,255,.22);color:#fff}
+.btn-outline{background:var(--surface2);border:1px solid var(--border2);color:var(--muted2);padding:6px 13px;border-radius:8px;font-size:12px;font-weight:600}
+.btn-outline:hover{border-color:var(--accent);color:var(--accent)}
+.btn-danger{background:#fceee8;color:var(--red);border:1px solid #f0c0a8;padding:6px 13px;border-radius:8px;font-size:12px;font-weight:600}
+.btn-danger:hover{background:#f8ddd0}
+.btn-save{padding:9px 22px;background:var(--accent);border-radius:8px;color:#fff;font-weight:700;font-size:14px;border:2px solid var(--accent3)}
+.btn-save:hover{background:var(--accent2)}
+.btn-cancel{padding:9px 18px;background:var(--surface2);border-radius:8px;color:var(--muted2);font-weight:600;font-size:14px;border:1px solid var(--border2)}
+.btn-create{width:100%;padding:10px;background:var(--accent);border-radius:8px;color:#fff;font-weight:700;font-size:14px;margin-bottom:16px;font-family:'DM Sans',sans-serif;border:2px solid var(--accent3);cursor:pointer}
+.btn-create:disabled{opacity:.4;cursor:not-allowed}
+.btn-connect{width:100%;padding:10px;background:var(--surface2);border:1px solid var(--border2);border-radius:8px;color:var(--muted2);font-weight:700;font-size:14px;font-family:'DM Sans',sans-serif;cursor:pointer}
+.btn-connect:hover{color:var(--accent);border-color:var(--accent)}
 
-  /* Stats */
-  .stats { display: grid; grid-template-columns: repeat(4,1fr); gap: 10px; margin-bottom: 20px; }
-  .stat-card {
-    background: var(--surface); border: 1px solid var(--border);
-    border-radius: 10px; padding: 10px 12px; text-align: center;
-    box-shadow: 0 1px 4px #0001;
-  }
-  .stat-icon { font-size: 18px; }
-  .stat-val { font-size: 19px; font-weight: 800; font-family: 'Syne', sans-serif; }
-  .stat-lbl { font-size: 10px; color: var(--muted); font-weight: 600; letter-spacing: 0.5px; text-transform: uppercase; margin-top: 2px; }
+.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:20px}
+.stat-card{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:10px 12px;text-align:center;box-shadow:0 1px 4px #0001}
+.stat-icon{font-size:18px}
+.stat-val{font-size:19px;font-weight:800;font-family:'Syne',sans-serif}
+.stat-lbl{font-size:10px;color:var(--muted);font-weight:600;letter-spacing:.5px;text-transform:uppercase;margin-top:2px}
 
-  /* Filters */
-  .filters { display: flex; flex-direction: column; gap: 8px; margin-bottom: 20px; }
-  .filter-row { display: flex; gap: 6px; flex-wrap: wrap; }
-  .filter-chip {
-    padding: 5px 12px; border-radius: 20px; font-size: 12px; font-weight: 600;
-    background: var(--surface); color: var(--muted); border: 1px solid var(--border);
-  }
-  .filter-chip:hover { border-color: var(--accent); color: var(--accent); }
-  .filter-chip.active-state { background: var(--accent); color: #fff; border-color: var(--accent3); }
-  .filter-chip.active-act   { background: var(--brown); color: #fff; border-color: #5a3d1e; }
-  .filter-chip.active-tren  { background: var(--teal);  color: #fff; border-color: #0e4040; }
-  .search-input {
-    width: 100%; background: var(--surface); border: 1px solid var(--border);
-    color: var(--text); padding: 9px 14px; border-radius: 8px; font-size: 14px;
-    font-family: 'DM Sans', sans-serif; outline: none;
-  }
-  .search-input:focus { border-color: var(--accent); }
+.filters{display:flex;flex-direction:column;gap:8px;margin-bottom:20px}
+.filter-row{display:flex;gap:6px;flex-wrap:wrap}
+.chip{padding:5px 12px;border-radius:20px;font-size:12px;font-weight:600;background:var(--surface);color:var(--muted);border:1px solid var(--border)}
+.chip:hover{border-color:var(--accent);color:var(--accent)}
+.chip.cs{background:var(--accent);color:#fff;border-color:var(--accent3)}
+.chip.ca{background:var(--brown);color:#fff;border-color:#5a3d1e}
+.chip.ct{background:var(--teal);color:#fff;border-color:#0e4040}
+.search{width:100%;background:var(--surface);border:1px solid var(--border);color:var(--text);padding:9px 14px;border-radius:8px;font-size:14px;font-family:'DM Sans',sans-serif;outline:none}
+.search:focus{border-color:var(--accent)}
 
-  /* Route card */
-  .route-card {
-    background: var(--surface); border: 1px solid var(--border);
-    border-radius: 12px; overflow: hidden; margin-bottom: 10px;
-    transition: box-shadow .2s; box-shadow: 0 1px 4px #0001;
-  }
-  .route-card:hover { box-shadow: 0 4px 16px #0002; }
-  .card-header {
-    padding: 14px 16px; cursor: pointer;
-    display: flex; align-items: flex-start; gap: 10px;
-  }
-  .card-act-icon { font-size: 22px; line-height: 1; flex-shrink: 0; }
-  .card-body { flex: 1; min-width: 0; }
-  .card-title {
-    font-weight: 700; color: var(--text); font-size: 15px;
-    display: flex; align-items: center; gap: 8px; flex-wrap: wrap;
-  }
-  .card-tags { display: flex; gap: 6px; margin-top: 6px; flex-wrap: wrap; }
-  .tag {
-    padding: 2px 8px; border-radius: 6px; font-size: 12px; font-weight: 600;
-    letter-spacing: 0.3px; white-space: nowrap;
-  }
-  .chevron { color: var(--muted); font-size: 11px; flex-shrink: 0; margin-top: 4px; }
+.route-card{background:var(--surface);border:1px solid var(--border);border-radius:12px;overflow:hidden;margin-bottom:10px;transition:box-shadow .2s;box-shadow:0 1px 4px #0001}
+.route-card:hover{box-shadow:0 4px 16px #0002}
+.card-head{padding:14px 16px;cursor:pointer;display:flex;align-items:flex-start;gap:10px}
+.card-act{font-size:22px;line-height:1;flex-shrink:0}
+.card-body{flex:1;min-width:0}
+.card-title{font-weight:700;color:var(--text);font-size:15px;display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.card-tags{display:flex;gap:6px;margin-top:6px;flex-wrap:wrap}
+.tag{padding:2px 8px;border-radius:6px;font-size:12px;font-weight:600;letter-spacing:.3px;white-space:nowrap}
+.chevron{color:var(--muted);font-size:11px;flex-shrink:0;margin-top:4px}
+.card-detail{border-top:1px solid var(--border);background:var(--surface2);padding:14px 16px}
+.detail-link{display:inline-flex;align-items:center;gap:6px;color:var(--accent);font-size:13px;margin-bottom:12px;word-break:break-all;text-decoration:none;font-weight:600}
+.detail-link:hover{color:var(--accent3)}
+.detail-env{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:10px}
+.notes-box{color:var(--muted2);font-size:13px;line-height:1.6;background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:10px 12px;margin-bottom:12px;white-space:pre-wrap}
+.card-actions{display:flex;gap:8px;justify-content:flex-end}
 
-  .card-detail {
-    border-top: 1px solid var(--border);
-    background: var(--surface2);
-    padding: 14px 16px;
-  }
-  .detail-link {
-    display: inline-flex; align-items: center; gap: 6px;
-    color: var(--accent); font-size: 13px; margin-bottom: 12px;
-    word-break: break-all; text-decoration: none;
-  }
-  .detail-link:hover { color: var(--accent2); }
-  .detail-env { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 10px; }
-  .notes-box {
-    color: var(--muted2); font-size: 13px; line-height: 1.6;
-    background: var(--surface); border-radius: 8px;
-    padding: 10px 12px; margin-bottom: 12px; white-space: pre-wrap;
-  }
-  .card-actions { display: flex; gap: 8px; justify-content: flex-end; }
+.empty{text-align:center;padding:70px 20px}
+.empty-icon{font-size:52px;margin-bottom:14px}
+.empty p{color:var(--muted);font-size:15px}
 
-  /* Empty state */
-  .empty { text-align: center; padding: 70px 20px; }
-  .empty-icon { font-size: 52px; margin-bottom: 14px; }
-  .empty p { color: var(--muted); font-size: 15px; }
+.overlay{position:fixed;inset:0;background:rgba(20,12,4,.55);z-index:200;display:flex;align-items:center;justify-content:center;padding:16px}
+.modal{background:var(--surface);border-radius:16px;padding:24px;width:100%;max-width:560px;max-height:90vh;overflow-y:auto;border:1px solid var(--border2);box-shadow:0 24px 64px #0003}
+.modal-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:20px}
+.modal-head h2{font-size:17px;color:var(--text)}
+.modal-close{background:var(--surface2);color:var(--muted);border-radius:8px;width:32px;height:32px;font-size:15px;display:flex;align-items:center;justify-content:center;border:1px solid var(--border)}
+.modal-close:hover{color:var(--text)}
 
-  /* Modal */
-  .modal-overlay {
-    position: fixed; inset: 0; background: rgba(20,12,4,.55);
-    z-index: 200; display: flex; align-items: center;
-    justify-content: center; padding: 16px;
-  }
-  .modal {
-    background: var(--surface); border-radius: 16px; padding: 24px;
-    width: 100%; max-width: 560px; max-height: 90vh; overflow-y: auto;
-    border: 1px solid var(--border2); box-shadow: 0 24px 64px #0003;
-  }
-  .modal-head {
-    display: flex; justify-content: space-between;
-    align-items: center; margin-bottom: 20px;
-  }
-  .modal-head h2 { font-size: 17px; }
-  .modal-close {
-    background: var(--surface2); color: var(--muted2);
-    border-radius: 8px; width: 32px; height: 32px;
-    font-size: 15px; display: flex; align-items: center; justify-content: center;
-    border: none;
-  }
-  .modal-close:hover { color: var(--text); }
+.field{margin-bottom:14px}
+.field label{display:block;color:var(--muted);font-size:10px;font-weight:700;letter-spacing:1px;text-transform:uppercase;margin-bottom:5px}
+.fi,.fs,.ft{width:100%;background:var(--bg);border:1px solid var(--border2);color:var(--text);padding:8px 12px;border-radius:8px;font-size:14px;font-family:'DM Sans',sans-serif;outline:none}
+.fi:focus,.fs:focus,.ft:focus{border-color:var(--accent)}
+.ft{min-height:80px;resize:vertical}
+.fs option{background:var(--surface)}
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.sec{border-top:2px dashed var(--border);margin:16px 0;padding-top:14px}
+.sec-lbl{color:var(--accent3);font-size:10px;font-weight:700;letter-spacing:1px;text-transform:uppercase;margin-bottom:12px}
 
-  /* Form */
-  .field { margin-bottom: 14px; }
-  .field label {
-    display: block; color: var(--muted); font-size: 10px; font-weight: 700;
-    letter-spacing: 1px; text-transform: uppercase; margin-bottom: 5px;
-  }
-  .f-input, .f-select, .f-textarea {
-    width: 100%; background: var(--bg); border: 1px solid var(--border2);
-    color: var(--text); padding: 8px 12px; border-radius: 8px; font-size: 14px;
-    font-family: 'DM Sans', sans-serif; outline: none;
-  }
-  .f-input:focus, .f-select:focus, .f-textarea:focus { border-color: var(--accent); }
-  .f-textarea { min-height: 80px; resize: vertical; }
-  .f-select option { background: var(--surface); }
-  .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
-  .section-divider {
-    border-top: 1px solid var(--border); margin: 16px 0; padding-top: 14px;
-  }
-  .section-label {
-    color: var(--muted); font-size: 10px; font-weight: 700;
-    letter-spacing: 1px; text-transform: uppercase; margin-bottom: 12px;
-  }
+.seg{display:flex;background:var(--bg);border-radius:8px;padding:3px;gap:2px;border:1px solid var(--border)}
+.seg-btn{flex:1;padding:6px 8px;border-radius:6px;font-size:12px;font-weight:600;background:transparent;color:var(--muted);border:none}
+.seg-btn.on{background:var(--accent);color:#fff}
 
-  /* Segmented */
-  .segmented {
-    display: flex; background: var(--bg); border-radius: 8px; padding: 3px; gap: 2px;
-    border: 1px solid var(--border);
-  }
-  .seg-btn {
-    flex: 1; padding: 6px 8px; border-radius: 6px; font-size: 12px; font-weight: 600;
-    background: transparent; color: var(--muted); border: none;
-  }
-  .seg-btn.active { background: var(--accent); color: #fff; }
+.bool-row{display:flex;gap:8px}
+.bool-btn{flex:1;padding:8px;border-radius:8px;font-size:13px;font-weight:600;background:var(--bg);color:var(--muted);border:2px solid var(--border2)}
+.bool-btn.on{border-color:var(--accent);color:var(--accent);background:#d8f3dc55}
 
-  /* Bool buttons */
-  .bool-row { display: flex; gap: 8px; }
-  .bool-btn {
-    flex: 1; padding: 8px; border-radius: 8px; font-size: 13px; font-weight: 600;
-    background: var(--bg); color: var(--muted); border: 2px solid var(--border2);
-  }
-  .bool-btn.active { border-color: var(--accent); color: var(--accent); background: #d8f3dc55; }
+.ac{position:relative}
+.ac-drop{position:absolute;top:100%;left:0;right:0;background:var(--surface);border:1px solid var(--border2);border-radius:8px;z-index:10;margin-top:4px;overflow:hidden;box-shadow:0 4px 16px #0002}
+.ac-item{padding:8px 12px;cursor:pointer;color:var(--text);font-size:14px;border-bottom:1px solid var(--border)}
+.ac-item:hover{background:var(--surface2)}
+.ac-item:last-child{border-bottom:none}
 
-  /* Autocomplete */
-  .autocomplete { position: relative; }
-  .ac-dropdown {
-    position: absolute; top: 100%; left: 0; right: 0;
-    background: var(--surface2); border: 1px solid var(--border2);
-    border-radius: 8px; z-index: 10; margin-top: 4px; overflow: hidden;
-  }
-  .ac-item {
-    padding: 8px 12px; cursor: pointer; color: var(--text); font-size: 14px;
-    border-bottom: 1px solid var(--border);
-  }
-  .ac-item:hover { background: var(--border); }
-  .ac-item:last-child { border-bottom: none; }
+.form-actions{display:flex;gap:10px;justify-content:flex-end;margin-top:8px}
 
-  /* Form actions */
-  .form-actions { display: flex; gap: 10px; justify-content: flex-end; margin-top: 8px; }
-  .btn-save {
-    padding: 9px 22px; background: var(--accent); border-radius: 8px;
-    color: #fff; font-weight: 700; font-size: 14px; border: none;
-  }
-  .btn-save:hover { background: var(--accent2); }
-  .btn-cancel {
-    padding: 9px 18px; background: var(--surface2); border-radius: 8px;
-    color: var(--muted2); font-weight: 600; font-size: 14px; border: none;
-  }
+.setup-tip{background:#d8f3dc;border:1px solid #95d5b2;border-radius:10px;padding:12px 16px;margin-bottom:18px;color:var(--accent3);font-size:13px;line-height:1.6}
+.setup-tip code{background:#b7e4c7;padding:2px 6px;border-radius:4px;color:var(--accent3);font-size:12px}
+.div-or{display:flex;align-items:center;gap:10px;margin:16px 0;color:var(--muted);font-size:12px}
+.div-or::before,.div-or::after{content:'';flex:1;height:1px;background:var(--border)}
+.cur-gist{background:var(--surface2);border:1px solid var(--border);border-radius:8px;padding:10px 14px;margin-bottom:16px;font-size:12px;color:var(--muted)}
+.cur-gist code{color:var(--accent3);font-size:11px;word-break:break-all}
+.err-msg{color:var(--red);font-size:13px;margin-top:10px;text-align:center}
 
-  /* Setup */
-  .setup-tip {
-    background: #d8f3dc; border: 1px solid #95d5b2; border-radius: 10px;
-    padding: 12px 16px; margin-bottom: 18px; color: #1b4332;
-    font-size: 13px; line-height: 1.6;
-  }
-  .setup-tip code {
-    background: #b7e4c7; padding: 2px 6px; border-radius: 4px;
-    color: #1b4332; font-size: 12px;
-  }
-  .divider-or {
-    display: flex; align-items: center; gap: 10px; margin: 16px 0;
-    color: var(--muted); font-size: 12px;
-  }
-  .divider-or::before, .divider-or::after {
-    content: ''; flex: 1; height: 1px; background: var(--border);
-  }
-  .btn-connect {
-    width: 100%; padding: 10px; background: var(--surface2);
-    border: 1px solid var(--border2); border-radius: 8px;
-    color: var(--muted2); font-weight: 700; font-size: 14px;
-    font-family: 'DM Sans', sans-serif;
-  }
-  .btn-connect:hover { color: var(--text); border-color: var(--muted); }
-  .btn-create {
-    width: 100%; padding: 10px; background: var(--accent); border-radius: 8px;
-    color: #fff; font-weight: 700; font-size: 14px; margin-bottom: 16px;
-    font-family: 'DM Sans', sans-serif; border: none;
-  }
-  .btn-create:disabled { opacity: 0.4; cursor: not-allowed; }
-  .error-msg { color: var(--red); font-size: 13px; margin-top: 10px; text-align: center; }
-  .current-gist {
-    background: var(--surface2); border: 1px solid var(--border); border-radius: 8px;
-    padding: 10px 14px; margin-bottom: 16px; font-size: 12px; color: var(--muted);
-  }
-  .current-gist code { color: var(--accent3); font-size: 11px; word-break: break-all; }
-
-  @media (max-width: 480px) {
-    .stats { grid-template-columns: repeat(2,1fr); }
-    .grid-2 { grid-template-columns: 1fr; }
-    .header-inner { gap: 8px; }
-  }
+@media(max-width:480px){
+  .stats{grid-template-columns:repeat(2,1fr)}
+  .g2{grid-template-columns:1fr}
+  .header-inner{gap:8px}
+}
 </style>
 </head>
 <body>
-
 <div id="app"></div>
-
 <script type="module">
-import { h, render } from 'https://esm.sh/preact@10.20.1';
-import { useState, useEffect, useRef, useCallback } from 'https://esm.sh/preact@10.20.1/hooks';
-import htm from 'https://esm.sh/htm@3.1.1';
-const html = htm.bind(h);
+import{h,render}from'https://esm.sh/preact@10.20.1';
+import{useState,useEffect}from'https://esm.sh/preact@10.20.1/hooks';
+import htm from'https://esm.sh/htm@3.1.1';
+const html=htm.bind(h);
 
-// ── Constants ─────────────────────────────────────────────────────────────────
-const GIST_FILENAME = 'olmaps_routes.json';
-const MONTHS = ['Enero','Febrero','Marzo','Abril','Mayo','Junio','Julio','Agosto','Septiembre','Octubre','Noviembre','Diciembre'];
-const STATES = [{v:'pendiente',l:'🔭 Pendiente'},{v:'hecha',l:'✅ Hecha'},{v:'favorita',l:'⭐ Favorita'}];
-const ACTS   = [{v:'senderismo',l:'🚶🏾‍♀️ Senderismo'},{v:'bici',l:'🚲 Bici'},{v:'correr',l:'🏃🏾‍♀️ Correr'}];
-const DIFFS  = [{v:'baja',l:'🟢 Baja'},{v:'media',l:'🟠 Media'},{v:'alta',l:'🔴 Alta'}];
-const SHADOWS= ['Poca','Media','Mucha'];
-const CROWDS = ['Poca','Media','Mucha'];
+// ── Data ──────────────────────────────────────────────────────────────────────
+const GIST_FILE='olmaps_routes.json';
+const MONTHS=['Enero','Febrero','Marzo','Abril','Mayo','Junio','Julio','Agosto','Septiembre','Octubre','Noviembre','Diciembre'];
+const STATES=[{v:'pendiente',l:'🔭 Pendiente'},{v:'hecha',l:'✅ Hecha'},{v:'favorita',l:'⭐ Favorita'}];
+const ACTS=[{v:'senderismo',l:'🚶🏾‍♀️ Senderismo'},{v:'bici',l:'🚲 Bici'},{v:'correr',l:'🏃🏾‍♀️ Correr'}];
+const DIFFS=[{v:'baja',l:'🟢 Baja'},{v:'media',l:'🟠 Media'},{v:'alta',l:'🔴 Alta'}];
+const SHADOWS=['Poca','Media','Mucha'];
+const CROWDS=['Poca','Media','Mucha'];
 
-const stateColor = s => s==='favorita'?'#c49a0a':s==='hecha'?'#2d6a4f':'#6e5c42';
-const diffColor  = d => d==='alta'?'#b83c0c':d==='media'?'#d4712a':'#2d6a4f';
-const actIcon    = a => a==='bici'?'🚲':a==='correr'?'🏃🏾‍♀️':'🚶🏾‍♀️';
-
-const emptyRoute = () => ({
-  id: Date.now(), nombre:'', enlace:'', estado:'pendiente',
-  estacionTren:'', actividad:'senderismo', kms:'', dificultad:'media',
-  mes:'', fuentes:false, sombra:'Media', masificacion:'Media', notas:'',
-});
+const sColor=s=>s==='favorita'?'#c49a0a':s==='hecha'?'#2d6a4f':'#6e5c42';
+const dColor=d=>d==='alta'?'#b83c0c':d==='media'?'#d4712a':'#2d6a4f';
+const aIcon=a=>a==='bici'?'🚲':a==='correr'?'🏃🏾‍♀️':'🚶🏾‍♀️';
+const newRoute=()=>({id:Date.now(),nombre:'',enlace:'',estado:'pendiente',estTren:'',actividad:'senderismo',kms:'',dificultad:'media',mes:'',fuentes:false,sombra:'Media',masificacion:'Media',notas:''});
 
 // ── GitHub Gist ───────────────────────────────────────────────────────────────
-const gh = (token, path, opts={}) => fetch(`https://api.github.com${path}`, {
-  ...opts,
-  headers: { Authorization:`token ${token}`, Accept:'application/vnd.github.v3+json',
-    'Content-Type':'application/json', ...(opts.headers||{}) },
-});
+const ghFetch=(token,path,opts={})=>fetch('https://api.github.com'+path,{...opts,headers:{Authorization:'token '+token,Accept:'application/vnd.github.v3+json','Content-Type':'application/json',...(opts.headers||{})}});
 
-async function fetchGist(token, id) {
-  const r = await gh(token, `/gists/${id}`);
-  if (!r.ok) throw new Error(`Error ${r.status}`);
-  const d = await r.json();
-  const f = d.files[GIST_FILENAME];
-  return f ? JSON.parse(f.content) : [];
+async function loadGist(token,id){
+  const r=await ghFetch(token,'/gists/'+id);
+  if(!r.ok)throw new Error('Error '+r.status);
+  const d=await r.json();
+  const f=d.files[GIST_FILE];
+  return f?JSON.parse(f.content):[];
+}
+async function saveGist(token,id,routes){
+  const body={files:{}};
+  body.files[GIST_FILE]={content:JSON.stringify(routes,null,2)};
+  const r=await ghFetch(token,'/gists/'+id,{method:'PATCH',body:JSON.stringify(body)});
+  if(!r.ok)throw new Error('Error '+r.status);
+}
+async function createGist(token){
+  const body={description:'OlMaps — mis rutas',public:false,files:{}};
+  body.files[GIST_FILE]={content:JSON.stringify([],null,2)};
+  const r=await ghFetch(token,'/gists',{method:'POST',body:JSON.stringify(body)});
+  if(!r.ok)throw new Error('Error '+r.status);
+  return (await r.json()).id;
 }
 
-async function saveGist(token, id, routes) {
-  const r = await gh(token, `/gists/${id}`, {
-    method:'PATCH',
-    body: JSON.stringify({ files:{ [GIST_FILENAME]:{ content: JSON.stringify(routes,null,2) } } }),
-  });
-  if (!r.ok) throw new Error(`Error ${r.status}`);
+// ── Small components ──────────────────────────────────────────────────────────
+function Tag({children,color='#6e5c42'}){
+  return html`<span class="tag" style=${{background:color+'18',color,border:'1px solid '+color+'44'}}>${children}</span>`;
 }
 
-async function createGist(token) {
-  const r = await gh(token, '/gists', {
-    method:'POST',
-    body: JSON.stringify({
-      description:'OlMaps — mis rutas', public:false,
-      files:{ [GIST_FILENAME]:{ content: JSON.stringify([],null,2) } },
-    }),
-  });
-  if (!r.ok) throw new Error(`Error ${r.status}`);
-  const d = await r.json();
-  return d.id;
+function Seg({options,value,onChange}){
+  return html`<div class="seg">${options.map(o=>html`<button class=${'seg-btn'+(value===o.v?' on':'')} onClick=${()=>onChange(o.v)}>${o.l}</button>`)}</div>`;
 }
 
-// ── Tag component ─────────────────────────────────────────────────────────────
-function Tag({ children, color='#64748b' }) {
-  return html`<span class="tag" style=${{ background:color+'22', color, border:`1px solid ${color}44` }}>${children}</span>`;
-}
-
-// ── Segmented control ─────────────────────────────────────────────────────────
-function Seg({ options, value, onChange }) {
+function Modal({title,onClose,children}){
   return html`
-    <div class="segmented">
-      ${options.map(o => html`
-        <button class=${'seg-btn'+(value===o.v?' active':'')} onClick=${()=>onChange(o.v)}>${o.l}</button>
-      `)}
-    </div>`;
-}
-
-// ── Modal ─────────────────────────────────────────────────────────────────────
-function Modal({ title, onClose, children }) {
-  return html`
-    <div class="modal-overlay" onClick=${onClose}>
+    <div class="overlay" onClick=${onClose}>
       <div class="modal" onClick=${e=>e.stopPropagation()}>
         <div class="modal-head">
           <h2>${title}</h2>
@@ -388,104 +210,85 @@ function Modal({ title, onClose, children }) {
     </div>`;
 }
 
-// ── Autocomplete field ────────────────────────────────────────────────────────
-function AcField({ label, value, onChange, suggestions, placeholder }) {
-  const [show, setShow] = useState(false);
-  const filtered = suggestions.filter(s =>
-    s.toLowerCase().includes((value||'').toLowerCase()) && s !== value
-  );
-  return html\`
+function AcField({label,value,onChange,suggestions,placeholder}){
+  const [show,setShow]=useState(false);
+  const opts=suggestions.filter(s=>s.toLowerCase().includes((value||'').toLowerCase())&&s!==value);
+  return html`
     <div class="field">
-      <label>\${label}</label>
-      <div class="autocomplete">
-        <input class="f-input" value=\${value}
-          onInput=\${e=>{onChange(e.target.value);setShow(true);}}
-          onFocus=\${()=>setShow(true)}
-          onBlur=\${()=>setTimeout(()=>setShow(false),150)}
-          placeholder=\${placeholder} />
-        \${show && filtered.length>0 && html\`
-          <div class="ac-dropdown">
-            \${filtered.map(s => html\`
-              <div class="ac-item" onMouseDown=\${()=>{onChange(s);setShow(false);}}>\${s}</div>
-            \`)}
-          </div>\`}
+      <label>${label}</label>
+      <div class="ac">
+        <input class="fi" value=${value}
+          onInput=${e=>{onChange(e.target.value);setShow(true);}}
+          onFocus=${()=>setShow(true)}
+          onBlur=${()=>setTimeout(()=>setShow(false),150)}
+          placeholder=${placeholder}/>
+        ${show&&opts.length>0&&html`
+          <div class="ac-drop">
+            ${opts.map(s=>html`<div class="ac-item" onMouseDown=${()=>{onChange(s);setShow(false);}}>${s}</div>`)}
+          </div>`}
       </div>
-    </div>\`;
+    </div>`;
 }
 
 // ── Route form ────────────────────────────────────────────────────────────────
-function RouteForm({ initial, allTren, onSave, onCancel }) {
-  const [r, setR] = useState(initial);
-  const set = (k,v) => setR(p => ({...p,[k]:v}));
-
+function RouteForm({initial,allTren,onSave,onCancel}){
+  const [r,setR]=useState(initial);
+  const set=(k,v)=>setR(p=>({...p,[k]:v}));
   return html`
     <div>
-      <div class="field">
-        <label>Nombre de la ruta</label>
-        <input class="f-input" value=${r.nombre} onInput=${e=>set('nombre',e.target.value)} placeholder="Ej: Camino del Norte" />
+      <div class="field"><label>Nombre de la ruta</label>
+        <input class="fi" value=${r.nombre} onInput=${e=>set('nombre',e.target.value)} placeholder="Ej: Camino del Norte"/>
       </div>
-      <div class="field">
-        <label>🔗 Enlace</label>
-        <input class="f-input" value=${r.enlace} onInput=${e=>set('enlace',e.target.value)} placeholder="https://..." />
+      <div class="field"><label>🔗 Enlace</label>
+        <input class="fi" value=${r.enlace} onInput=${e=>set('enlace',e.target.value)} placeholder="https://..."/>
       </div>
-      <div class="field">
-        <label>Estado</label>
-        <${Seg} options=${STATES} value=${r.estado} onChange=${v=>set('estado',v)} />
+      <div class="field"><label>Estado</label>
+        <${Seg} options=${STATES} value=${r.estado} onChange=${v=>set('estado',v)}/>
       </div>
-      <div class="field">
-        <label>Actividad</label>
-        <${Seg} options=${ACTS} value=${r.actividad} onChange=${v=>set('actividad',v)} />
+      <div class="field"><label>Actividad</label>
+        <${Seg} options=${ACTS} value=${r.actividad} onChange=${v=>set('actividad',v)}/>
       </div>
-      <div class="grid-2">
-        <div class="field">
-          <label>Kms</label>
-          <input class="f-input" type="number" value=${r.kms} onInput=${e=>set('kms',e.target.value)} placeholder="0" />
+      <div class="g2">
+        <div class="field"><label>Kms</label>
+          <input class="fi" type="number" value=${r.kms} onInput=${e=>set('kms',e.target.value)} placeholder="0"/>
         </div>
-        <div class="field">
-          <label>Dificultad</label>
-          <select class="f-select" value=${r.dificultad} onChange=${e=>set('dificultad',e.target.value)}>
-            ${DIFFS.map(d => html`<option value=${d.v}>${d.l}</option>`)}
+        <div class="field"><label>Dificultad</label>
+          <select class="fs" value=${r.dificultad} onChange=${e=>set('dificultad',e.target.value)}>
+            ${DIFFS.map(d=>html`<option value=${d.v}>${d.l}</option>`)}
           </select>
         </div>
       </div>
-          <div class="section-divider">
-        <p class="section-label">🌿 Entorno</p>
-        <div class="field">
-          <label>🗓️ Mes en que hice la ruta</label>
-          <select class="f-select" value=${r.mes} onChange=${e=>set('mes',e.target.value)}>
+      <${AcField} label="🚂 Estación de tren / bus" value=${r.estTren} onChange=${v=>set('estTren',v)} suggestions=${allTren} placeholder="Ej: Colmenar Viejo, Cercedilla…"/>
+      <div class="sec">
+        <p class="sec-lbl">🌿 Entorno</p>
+        <div class="field"><label>🗓️ Mes en que hice la ruta</label>
+          <select class="fs" value=${r.mes} onChange=${e=>set('mes',e.target.value)}>
             <option value="">— Sin especificar —</option>
-            ${MONTHS.map(m => html`<option value=${m}>${m}</option>`)}
+            ${MONTHS.map(m=>html`<option value=${m}>${m}</option>`)}
           </select>
         </div>
-        <div class="grid-2">
-          <div class="field">
-            <label>🌳 Sombra</label>
-            <select class="f-select" value=${r.sombra} onChange=${e=>set('sombra',e.target.value)}>
-              ${SHADOWS.map(s => html`<option>${s}</option>`)}
+        <div class="g2">
+          <div class="field"><label>🌳 Sombra</label>
+            <select class="fs" value=${r.sombra} onChange=${e=>set('sombra',e.target.value)}>
+              ${SHADOWS.map(s=>html`<option>${s}</option>`)}
             </select>
           </div>
-          <div class="field">
-            <label>🧑‍🧑‍🧒‍🧒 Masificación</label>
-            <select class="f-select" value=${r.masificacion} onChange=${e=>set('masificacion',e.target.value)}>
-              ${CROWDS.map(c => html`<option>${c}</option>`)}
+          <div class="field"><label>🧑‍🧑‍🧒‍🧒 Masificación</label>
+            <select class="fs" value=${r.masificacion} onChange=${e=>set('masificacion',e.target.value)}>
+              ${CROWDS.map(c=>html`<option>${c}</option>`)}
             </select>
           </div>
         </div>
-        <div class="field">
-          <label>⛲ ¿Hay fuentes?</label>
+        <div class="field"><label>⛲ ¿Hay fuentes?</label>
           <div class="bool-row">
-            <button class=${'bool-btn'+(r.fuentes===true?' active':'')} onClick=${()=>set('fuentes',true)}>⛲ Sí</button>
-            <button class=${'bool-btn'+(r.fuentes===false?' active':'')} onClick=${()=>set('fuentes',false)}>🚫 No</button>
+            <button class=${'bool-btn'+(r.fuentes===true?' on':'')} onClick=${()=>set('fuentes',true)}>⛲ Sí</button>
+            <button class=${'bool-btn'+(r.fuentes===false?' on':'')} onClick=${()=>set('fuentes',false)}>🚫 No</button>
           </div>
         </div>
-        <div class="field">
-          <label>📝 Notas</label>
-          <textarea class="f-textarea" value=${r.notas}
-            onInput=${e=>set('notas',e.target.value)}
-            placeholder="Observaciones, terreno, consejos…" />
+        <div class="field"><label>📝 Notas</label>
+          <textarea class="ft" value=${r.notas} onInput=${e=>set('notas',e.target.value)} placeholder="Observaciones, terreno, consejos…"/>
         </div>
       </div>
-
       <div class="form-actions">
         <button class="btn-cancel" onClick=${onCancel}>Cancelar</button>
         <button class="btn-save" onClick=${()=>onSave(r)}>💾 Guardar</button>
@@ -494,285 +297,244 @@ function RouteForm({ initial, allTren, onSave, onCancel }) {
 }
 
 // ── Route card ────────────────────────────────────────────────────────────────
-function RouteCard({ route, onEdit, onDelete }) {
-  const [open, setOpen] = useState(false);
-  const sc = stateColor(route.estado);
-  const dc = diffColor(route.dificultad);
-  const stateLabel = STATES.find(s=>s.v===route.estado)?.l;
-  const diffLabel  = DIFFS.find(d=>d.v===route.dificultad)?.l;
-
+function RouteCard({route,onEdit,onDelete}){
+  const [open,setOpen]=useState(false);
+  const sc=sColor(route.estado);
+  const dc=dColor(route.dificultad);
+  const sl=STATES.find(s=>s.v===route.estado)?.l;
+  const dl=DIFFS.find(d=>d.v===route.dificultad)?.l;
   return html`
     <div class="route-card">
-      <div class="card-header" onClick=${()=>setOpen(p=>!p)}>
-        <span class="card-act-icon">${actIcon(route.actividad)}</span>
+      <div class="card-head" onClick=${()=>setOpen(p=>!p)}>
+        <span class="card-act">${aIcon(route.actividad)}</span>
         <div class="card-body">
           <div class="card-title">
             ${route.nombre||'Sin nombre'}
-            <${Tag} color=${sc}>${stateLabel}</${Tag}>
+            <${Tag} color=${sc}>${sl}</${Tag}>
           </div>
           <div class="card-tags">
-            ${route.kms && html`<${Tag} color="#7b5e3a">📏 ${route.kms} km</${Tag}>`}
-            <${Tag} color=${dc}>${diffLabel}</${Tag}>
-            ${route.estacionTren && html`<${Tag} color="#1a6060">🚂 ${route.estacionTren}</${Tag}>`}
-            ${route.mes && html`<${Tag} color="#614880">🗓️ ${route.mes}</${Tag}>`}
+            ${route.kms&&html`<${Tag} color="#7b5e3a">📏 ${route.kms} km</${Tag}>`}
+            <${Tag} color=${dc}>${dl}</${Tag}>
+            ${route.estTren&&html`<${Tag} color="#1a6060">🚂 ${route.estTren}</${Tag}>`}
+            ${route.mes&&html`<${Tag} color="#614880">🗓️ ${route.mes}</${Tag}>`}
           </div>
         </div>
         <span class="chevron">${open?'▲':'▼'}</span>
       </div>
-
-      ${open && html`
+      ${open&&html`
         <div class="card-detail">
-          ${route.enlace && html`
-            <a class="detail-link" href=${route.enlace} target="_blank" rel="noreferrer">🔗 Abrir ruta</a>
-          `}
+          ${route.enlace&&html`<a class="detail-link" href=${route.enlace} target="_blank" rel="noreferrer">🔗 Abrir ruta</a>`}
           <div class="detail-env">
-            <${Tag} color=${route.fuentes?'#2d6a4f':'#b83c0c'}>
-              ${route.fuentes?'⛲ Fuentes':'🚫 Sin fuentes'}
-            </${Tag}>
+            <${Tag} color=${route.fuentes?'#2d6a4f':'#b83c0c'}>${route.fuentes?'⛲ Fuentes':'🚫 Sin fuentes'}</${Tag}>
             <${Tag} color="#7b5e3a">🌳 Sombra: ${route.sombra}</${Tag}>
             <${Tag} color="#614880">🧑‍🧑‍🧒‍🧒 Masif: ${route.masificacion}</${Tag}>
           </div>
-          ${route.notas && html`<div class="notes-box">📝 ${route.notas}</div>`}
+          ${route.notas&&html`<div class="notes-box">📝 ${route.notas}</div>`}
           <div class="card-actions">
-            <button class="btn-ghost" onClick=${()=>onEdit(route)}>✏️ Editar</button>
+            <button class="btn-outline" onClick=${()=>onEdit(route)}>✏️ Editar</button>
             <button class="btn-danger" onClick=${()=>onDelete(route.id)}>🗑️ Borrar</button>
           </div>
-        </div>
-      `}
+        </div>`}
     </div>`;
 }
 
-// ── Setup modal ───────────────────────────────────────────────────────────────
-function GistSetup({ currentGistId, onSave, onDisconnect }) {
-  const [token, setToken] = useState('');
-  const [gistId, setGistId] = useState('');
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState('');
+// ── Gist setup ────────────────────────────────────────────────────────────────
+function GistSetup({currentGistId,onSave,onDisconnect}){
+  const [token,setToken]=useState('');
+  const [gistId,setGistId]=useState('');
+  const [loading,setLoading]=useState(false);
+  const [error,setError]=useState('');
 
-  const handleCreate = async () => {
-    setLoading(true); setError('');
-    try { const id = await createGist(token); onSave(token, id); }
-    catch(e) { setError(e.message); }
+  const doCreate=async()=>{
+    setLoading(true);setError('');
+    try{const id=await createGist(token);onSave(token,id);}
+    catch(e){setError(e.message);}
     setLoading(false);
   };
-  const handleConnect = async () => {
-    setLoading(true); setError('');
-    try { await fetchGist(token, gistId); onSave(token, gistId); }
-    catch { setError('No se pudo conectar. Revisa el token y el ID.'); }
+  const doConnect=async()=>{
+    setLoading(true);setError('');
+    try{await loadGist(token,gistId);onSave(token,gistId);}
+    catch{setError('No se pudo conectar. Revisa el token y el ID.');}
     setLoading(false);
   };
 
   return html`
     <div>
-      ${currentGistId && html`
-        <div class="current-gist">
+      ${currentGistId&&html`
+        <div class="cur-gist">
           Gist actual: <code>${currentGistId}</code><br/>
           <button class="btn-danger" style=${{marginTop:'8px'}} onClick=${onDisconnect}>Desconectar</button>
-        </div>
-      `}
+        </div>`}
       <div class="setup-tip">
         <strong>¿Cómo obtener el token?</strong><br/>
         GitHub → Settings → Developer settings → Personal access tokens → Tokens (classic) → New token → marca solo <code>gist</code> → genera y copia.
       </div>
-      <div class="field">
-        <label>GitHub Token (permiso gist)</label>
-        <input class="f-input" type="password" value=${token}
-          onInput=${e=>setToken(e.target.value)} placeholder="ghp_…" />
+      <div class="field"><label>GitHub Token (permiso gist)</label>
+        <input class="fi" type="password" value=${token} onInput=${e=>setToken(e.target.value)} placeholder="ghp_…"/>
       </div>
-      <button class="btn-create" onClick=${handleCreate} disabled=${!token||loading}>
+      <button class="btn-create" onClick=${doCreate} disabled=${!token||loading}>
         ${loading?'Creando…':'✨ Crear nuevo Gist para OlMaps'}
       </button>
-      <div class="divider-or">o conectar uno existente</div>
-      <div class="field">
-        <label>ID del Gist existente</label>
-        <input class="f-input" value=${gistId}
-          onInput=${e=>setGistId(e.target.value)} placeholder="abc123def456…" />
+      <div class="div-or">o conectar uno existente</div>
+      <div class="field"><label>ID del Gist existente</label>
+        <input class="fi" value=${gistId} onInput=${e=>setGistId(e.target.value)} placeholder="abc123def456…"/>
       </div>
-      <button class="btn-connect" onClick=${handleConnect} disabled=${!token||!gistId||loading}>
+      <button class="btn-connect" onClick=${doConnect} disabled=${!token||!gistId||loading}>
         ${loading?'Conectando…':'🔗 Conectar Gist existente'}
       </button>
-      ${error && html`<p class="error-msg">${error}</p>`}
+      ${error&&html`<p class="err-msg">${error}</p>`}
     </div>`;
 }
 
 // ── App ───────────────────────────────────────────────────────────────────────
-function App() {
-  const [routes, setRoutes]         = useState([]);
-  const [token, setToken]           = useState(() => localStorage.getItem('olmaps_token')||'');
-  const [gistId, setGistId]         = useState(() => localStorage.getItem('olmaps_gist')||'');
-  const [syncing, setSyncing]       = useState(false);
-  const [lastSync, setLastSync]     = useState(null);
-  const [syncError, setSyncError]   = useState('');
-  const [showSetup, setShowSetup]   = useState(false);
-  const [showForm, setShowForm]     = useState(false);
-  const [editRoute, setEditRoute]   = useState(null);
-  const [filterState, setFilterState]   = useState('all');
-  const [filterAct, setFilterAct]       = useState('all');
-  const [search, setSearch]             = useState('');
+function App(){
+  const [routes,setRoutes]=useState([]);
+  const [token,setToken]=useState(()=>localStorage.getItem('om_token')||'');
+  const [gistId,setGistId]=useState(()=>localStorage.getItem('om_gist')||'');
+  const [syncing,setSyncing]=useState(false);
+  const [lastSync,setLastSync]=useState(null);
+  const [syncErr,setSyncErr]=useState('');
+  const [showSetup,setShowSetup]=useState(false);
+  const [showForm,setShowForm]=useState(false);
+  const [editRoute,setEditRoute]=useState(null);
+  const [fState,setFState]=useState('all');
+  const [fAct,setFAct]=useState('all');
+  const [fTren,setFTren]=useState('all');
+  const [search,setSearch]=useState('');
 
-  const connected = !!(token && gistId);
+  const connected=!!(token&&gistId);
 
-  useEffect(() => {
-    if (connected) load();
+  useEffect(()=>{
+    if(connected)load();
     else setShowSetup(true);
-  }, []);
+  },[]);
 
-  async function load() {
-    setSyncing(true); setSyncError('');
-    try { const d = await fetchGist(token, gistId); setRoutes(d); setLastSync(new Date()); }
-    catch(e) { setSyncError(e.message); }
+  async function load(){
+    setSyncing(true);setSyncErr('');
+    try{const d=await loadGist(token,gistId);setRoutes(d);setLastSync(new Date());}
+    catch(e){setSyncErr(e.message);}
     setSyncing(false);
   }
-
-  async function push(next) {
-    if (!connected) return;
-    setSyncing(true); setSyncError('');
-    try { await saveGist(token, gistId, next); setLastSync(new Date()); }
-    catch(e) { setSyncError(e.message); }
+  async function push(next){
+    if(!connected)return;
+    setSyncing(true);setSyncErr('');
+    try{await saveGist(token,gistId,next);setLastSync(new Date());}
+    catch(e){setSyncErr(e.message);}
     setSyncing(false);
   }
-
-  function handleSetupSave(t, g) {
-    localStorage.setItem('olmaps_token', t);
-    localStorage.setItem('olmaps_gist', g);
-    setToken(t); setGistId(g); setShowSetup(false);
-    setTimeout(() => load(), 100);
+  function handleSetupSave(t,g){
+    localStorage.setItem('om_token',t);
+    localStorage.setItem('om_gist',g);
+    setToken(t);setGistId(g);setShowSetup(false);
+    setTimeout(load,100);
+  }
+  function handleDisconnect(){
+    localStorage.removeItem('om_token');
+    localStorage.removeItem('om_gist');
+    setToken('');setGistId('');setRoutes([]);setShowSetup(false);
+  }
+  function handleSave(r){
+    const next=editRoute?routes.map(x=>x.id===r.id?r:x):[{...r,id:Date.now()},...routes];
+    setRoutes(next);push(next);
+    setShowForm(false);setEditRoute(null);
+  }
+  function handleDelete(id){
+    if(!confirm('¿Borrar esta ruta?'))return;
+    const next=routes.filter(r=>r.id!==id);
+    setRoutes(next);push(next);
   }
 
-  function handleDisconnect() {
-    localStorage.removeItem('olmaps_token');
-    localStorage.removeItem('olmaps_gist');
-    setToken(''); setGistId(''); setRoutes([]); setShowSetup(false);
-  }
+  const allTren=[...new Set(routes.map(r=>r.estTren).filter(Boolean))].sort();
 
-  function handleSave(r) {
-    const next = editRoute
-      ? routes.map(x => x.id===r.id ? r : x)
-      : [{ ...r, id:Date.now() }, ...routes];
-    setRoutes(next); push(next);
-    setShowForm(false); setEditRoute(null);
-  }
-
-  function handleDelete(id) {
-    if (!confirm('¿Borrar esta ruta?')) return;
-    const next = routes.filter(r => r.id!==id);
-    setRoutes(next); push(next);
-  }
-
-  const allTren = [...new Set(routes.map(r=>r.estacionTren).filter(Boolean))].sort();
-
-  const filtered = routes.filter(r => {
-    if (filterState!=='all' && r.estado!==filterState) return false;
-    if (filterAct!=='all' && r.actividad!==filterAct) return false;
-    if (filterTren!=='all' && r.estacionTren!==filterTren) return false;
-    if (search && !r.nombre.toLowerCase().includes(search.toLowerCase())) return false;
+  const filtered=routes.filter(r=>{
+    if(fState!=='all'&&r.estado!==fState)return false;
+    if(fAct!=='all'&&r.actividad!==fAct)return false;
+    if(fTren!=='all'&&r.estTren!==fTren)return false;
+    if(search&&!r.nombre.toLowerCase().includes(search.toLowerCase()))return false;
     return true;
   });
 
-  const stats = {
-    total: routes.length,
-    hechas: routes.filter(r=>r.estado==='hecha').length,
-    favoritas: routes.filter(r=>r.estado==='favorita').length,
-    kms: routes.filter(r=>r.kms).reduce((a,r)=>a+Number(r.kms),0),
+  const stats={
+    total:routes.length,
+    hechas:routes.filter(r=>r.estado==='hecha').length,
+    favoritas:routes.filter(r=>r.estado==='favorita').length,
+    kms:routes.filter(r=>r.kms).reduce((a,r)=>a+Number(r.kms),0),
   };
 
-  const syncStatus = syncing ? '⏳ Sincronizando…'
-    : syncError ? syncError
-    : lastSync ? `✅ Sync ${lastSync.toLocaleTimeString('es',{hour:'2-digit',minute:'2-digit'})}`
-    : connected ? '🔗 Conectado a Gist'
-    : '⚠️ Sin conexión';
+  const syncLabel=syncing?'⏳ Sincronizando…':syncErr?syncErr:lastSync?('✅ Sync '+lastSync.toLocaleTimeString('es',{hour:'2-digit',minute:'2-digit'})):connected?'🔗 Conectado':'⚠️ Sin conexión';
 
   return html`
     <div>
-      <!-- Header -->
       <header class="header">
         <div class="header-inner">
           <div class="logo">
             <h1>🗺️ <span>Ol</span>Maps</h1>
-            <p class=${syncError?'sync-error':''}>${syncStatus}</p>
+            <p class=${syncErr?'err':''}>${syncLabel}</p>
           </div>
-          ${connected && html`<button class="btn-ghost" onClick=${load}>↻ Sync</button>`}
+          ${connected&&html`<button class="btn-ghost" onClick=${load}>↻ Sync</button>`}
           <button class="btn-ghost" onClick=${()=>setShowSetup(true)}>⚙️</button>
           <button class="btn-primary" onClick=${()=>{setEditRoute(null);setShowForm(true);}}>+ Nueva</button>
         </div>
       </header>
 
       <main class="main">
-        <!-- Stats -->
-        ${routes.length>0 && html`
+        ${routes.length>0&&html`
           <div class="stats">
             ${[
               {icon:'🗺️',val:stats.total,lbl:'Total',color:'#2d6a4f'},
               {icon:'✅',val:stats.hechas,lbl:'Hechas',color:'#2d6a4f'},
               {icon:'⭐',val:stats.favoritas,lbl:'Favoritas',color:'#c49a0a'},
               {icon:'📏',val:stats.kms||'—',lbl:'Kms',color:'#7b5e3a'},
-            ].map(s => html`
+            ].map(s=>html`
               <div class="stat-card">
                 <div class="stat-icon">${s.icon}</div>
                 <div class="stat-val" style=${{color:s.color}}>${s.val}</div>
                 <div class="stat-lbl">${s.lbl}</div>
-              </div>
-            `)}
-          </div>
-        `}
+              </div>`)}
+          </div>`}
 
-        <!-- Filters -->
         <div class="filters">
-          <input class="search-input" value=${search}
-            onInput=${e=>setSearch(e.target.value)} placeholder="🔍 Buscar por nombre…" />
+          <input class="search" value=${search} onInput=${e=>setSearch(e.target.value)} placeholder="🔍 Buscar por nombre…"/>
           <div class="filter-row">
-            ${[{v:'all',l:'Todas'},...STATES].map(s => html`
-              <button class=${'filter-chip'+(filterState===s.v?' active-state':'')}
-                onClick=${()=>setFilterState(s.v)}>${s.l}</button>
-            `)}
+            ${[{v:'all',l:'Todas'},...STATES].map(s=>html`
+              <button class=${'chip'+(fState===s.v?' cs':'')} onClick=${()=>setFState(s.v)}>${s.l}</button>`)}
           </div>
           <div class="filter-row">
-            ${[{v:'all',l:'🗂️ Todas'},...ACTS].map(a => html`
-              <button class=${'filter-chip'+(filterAct===a.v?' active-act':'')}
-                onClick=${()=>setFilterAct(a.v)}>${a.l}</button>
-            `)}
+            ${[{v:'all',l:'🗂️ Todas'},...ACTS].map(a=>html`
+              <button class=${'chip'+(fAct===a.v?' ca':'')} onClick=${()=>setFAct(a.v)}>${a.l}</button>`)}
           </div>
+          ${allTren.length>0&&html`
+            <div class="filter-row">
+              <button class=${'chip'+(fTren==='all'?' ct':'')} onClick=${()=>setFTren('all')}>🚂 Todas</button>
+              ${allTren.map(t=>html`
+                <button class=${'chip'+(fTren===t?' ct':'')} onClick=${()=>setFTren(t)}>${t}</button>`)}
+            </div>`}
         </div>
 
-        <!-- Routes -->
-        ${filtered.length===0 ? html`
+        ${filtered.length===0?html`
           <div class="empty">
             <div class="empty-icon">🗺️</div>
-            <p>${routes.length===0
-              ? 'Aún no hay rutas.\n¡Añade tu primera ruta!'
-              : 'No hay rutas con estos filtros.'}</p>
+            <p>${routes.length===0?'¡Añade tu primera ruta!':'No hay rutas con estos filtros.'}</p>
           </div>
-        ` : filtered.map(r => html`
+        `:filtered.map(r=>html`
           <${RouteCard} key=${r.id} route=${r}
             onEdit=${route=>{setEditRoute(route);setShowForm(true);}}
-            onDelete=${handleDelete} />
-        `)}
+            onDelete=${handleDelete}/>`)}
       </main>
 
-      <!-- Modals -->
-      ${showForm && html`
-        <${Modal} title=${editRoute?'✏️ Editar ruta':'✨ Nueva ruta'}
-          onClose=${()=>{setShowForm(false);setEditRoute(null);}}>
-          <${RouteForm}
-            initial=${editRoute||emptyRoute()}
-            allTren=${allTren}
-            onSave=${handleSave}
-            onCancel=${()=>{setShowForm(false);setEditRoute(null);}} />
-        </${Modal}>
-      `}
+      ${showForm&&html`
+        <${Modal} title=${editRoute?'✏️ Editar ruta':'✨ Nueva ruta'} onClose=${()=>{setShowForm(false);setEditRoute(null);}}>
+          <${RouteForm} initial=${editRoute||newRoute()} allTren=${allTren} onSave=${handleSave} onCancel=${()=>{setShowForm(false);setEditRoute(null);}}/>
+        </${Modal}>`}
 
-      ${showSetup && html`
+      ${showSetup&&html`
         <${Modal} title="⚙️ Configurar sincronización" onClose=${()=>setShowSetup(false)}>
-          <${GistSetup}
-            currentGistId=${gistId}
-            onSave=${handleSetupSave}
-            onDisconnect=${handleDisconnect} />
-        </${Modal}>
-      `}
+          <${GistSetup} currentGistId=${gistId} onSave=${handleSetupSave} onDisconnect=${handleDisconnect}/>
+        </${Modal}>`}
     </div>`;
 }
 
-render(html`<${App}/>`, document.getElementById('app'));
+render(html`<${App}/>`,document.getElementById('app'));
 </script>
 </body>
 </html>

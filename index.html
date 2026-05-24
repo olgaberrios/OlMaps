@@ -1,0 +1,761 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>🗺️ OlMaps</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@600;800&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet" />
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  :root {
+    --bg: #080d1a;
+    --surface: #111827;
+    --surface2: #1a2538;
+    --border: #1f2f45;
+    --border2: #2a3f5a;
+    --text: #e8f0fe;
+    --muted: #5a7090;
+    --muted2: #8aa0ba;
+    --accent: #3b82f6;
+    --accent2: #60a5fa;
+    --green: #22c55e;
+    --amber: #f59e0b;
+    --red: #ef4444;
+    --orange: #f97316;
+    --purple: #8b5cf6;
+    --cyan: #0891b2;
+  }
+  html { font-size: 15px; }
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'DM Sans', sans-serif;
+    min-height: 100vh;
+    line-height: 1.5;
+  }
+  h1, h2, h3 { font-family: 'Syne', sans-serif; }
+
+  /* Layout */
+  .header {
+    background: var(--surface);
+    border-bottom: 1px solid var(--border);
+    padding: 14px 20px;
+    position: sticky; top: 0; z-index: 100;
+  }
+  .header-inner {
+    max-width: 680px; margin: 0 auto;
+    display: flex; align-items: center; gap: 12px;
+  }
+  .logo { flex: 1; }
+  .logo h1 { font-size: 20px; font-weight: 800; letter-spacing: -0.5px; }
+  .logo h1 span { color: var(--accent); }
+  .logo p { font-size: 11px; color: var(--muted); margin-top: 2px; }
+  .sync-error { color: var(--red) !important; }
+
+  .main { max-width: 680px; margin: 0 auto; padding: 20px 16px 60px; }
+
+  /* Buttons */
+  button { font-family: 'DM Sans', sans-serif; cursor: pointer; border: none; transition: all .15s; }
+  .btn-primary {
+    background: var(--accent); color: #fff;
+    padding: 8px 18px; border-radius: 8px; font-weight: 700; font-size: 13px;
+  }
+  .btn-primary:hover { background: var(--accent2); }
+  .btn-ghost {
+    background: var(--surface2); border: 1px solid var(--border2);
+    color: var(--muted2); padding: 7px 13px; border-radius: 8px; font-size: 12px; font-weight: 600;
+  }
+  .btn-ghost:hover { color: var(--text); border-color: var(--muted); }
+  .btn-danger {
+    background: #2d0a0a; color: var(--red);
+    padding: 6px 13px; border-radius: 8px; font-size: 12px; font-weight: 600;
+  }
+
+  /* Stats */
+  .stats { display: grid; grid-template-columns: repeat(4,1fr); gap: 10px; margin-bottom: 20px; }
+  .stat-card {
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: 10px; padding: 10px 12px; text-align: center;
+  }
+  .stat-icon { font-size: 18px; }
+  .stat-val { font-size: 19px; font-weight: 800; font-family: 'Syne', sans-serif; }
+  .stat-lbl { font-size: 10px; color: var(--muted); font-weight: 600; letter-spacing: 0.5px; text-transform: uppercase; margin-top: 2px; }
+
+  /* Filters */
+  .filters { display: flex; flex-direction: column; gap: 8px; margin-bottom: 20px; }
+  .filter-row { display: flex; gap: 6px; flex-wrap: wrap; }
+  .filter-chip {
+    padding: 5px 12px; border-radius: 20px; font-size: 12px; font-weight: 600;
+    background: var(--surface); color: var(--muted); border: none;
+  }
+  .filter-chip.active-state { background: var(--accent); color: #fff; }
+  .filter-chip.active-act { background: var(--cyan); color: #fff; }
+  .search-input {
+    width: 100%; background: var(--surface); border: 1px solid var(--border);
+    color: var(--text); padding: 9px 14px; border-radius: 8px; font-size: 14px;
+    font-family: 'DM Sans', sans-serif; outline: none;
+  }
+  .search-input:focus { border-color: var(--accent); }
+
+  /* Route card */
+  .route-card {
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: 12px; overflow: hidden; margin-bottom: 10px;
+    transition: box-shadow .2s;
+  }
+  .route-card:hover { box-shadow: 0 4px 24px #0008; }
+  .card-header {
+    padding: 14px 16px; cursor: pointer;
+    display: flex; align-items: flex-start; gap: 10px;
+  }
+  .card-act-icon { font-size: 22px; line-height: 1; flex-shrink: 0; }
+  .card-body { flex: 1; min-width: 0; }
+  .card-title {
+    font-weight: 700; color: var(--text); font-size: 15px;
+    display: flex; align-items: center; gap: 8px; flex-wrap: wrap;
+  }
+  .card-tags { display: flex; gap: 6px; margin-top: 6px; flex-wrap: wrap; }
+  .tag {
+    padding: 2px 8px; border-radius: 6px; font-size: 12px; font-weight: 600;
+    letter-spacing: 0.3px; white-space: nowrap;
+  }
+  .chevron { color: var(--muted); font-size: 11px; flex-shrink: 0; margin-top: 4px; }
+
+  .card-detail {
+    border-top: 1px solid var(--border);
+    background: var(--bg);
+    padding: 14px 16px;
+  }
+  .detail-link {
+    display: inline-flex; align-items: center; gap: 6px;
+    color: var(--accent); font-size: 13px; margin-bottom: 12px;
+    word-break: break-all; text-decoration: none;
+  }
+  .detail-link:hover { color: var(--accent2); }
+  .detail-env { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 10px; }
+  .notes-box {
+    color: var(--muted2); font-size: 13px; line-height: 1.6;
+    background: var(--surface); border-radius: 8px;
+    padding: 10px 12px; margin-bottom: 12px; white-space: pre-wrap;
+  }
+  .card-actions { display: flex; gap: 8px; justify-content: flex-end; }
+
+  /* Empty state */
+  .empty { text-align: center; padding: 70px 20px; }
+  .empty-icon { font-size: 52px; margin-bottom: 14px; }
+  .empty p { color: var(--muted); font-size: 15px; }
+
+  /* Modal */
+  .modal-overlay {
+    position: fixed; inset: 0; background: rgba(0,0,0,.75);
+    z-index: 200; display: flex; align-items: center;
+    justify-content: center; padding: 16px;
+  }
+  .modal {
+    background: var(--surface); border-radius: 16px; padding: 24px;
+    width: 100%; max-width: 560px; max-height: 90vh; overflow-y: auto;
+    border: 1px solid var(--border2); box-shadow: 0 24px 64px #000c;
+  }
+  .modal-head {
+    display: flex; justify-content: space-between;
+    align-items: center; margin-bottom: 20px;
+  }
+  .modal-head h2 { font-size: 17px; }
+  .modal-close {
+    background: var(--surface2); color: var(--muted2);
+    border-radius: 8px; width: 32px; height: 32px;
+    font-size: 15px; display: flex; align-items: center; justify-content: center;
+    border: none;
+  }
+  .modal-close:hover { color: var(--text); }
+
+  /* Form */
+  .field { margin-bottom: 14px; }
+  .field label {
+    display: block; color: var(--muted); font-size: 10px; font-weight: 700;
+    letter-spacing: 1px; text-transform: uppercase; margin-bottom: 5px;
+  }
+  .f-input, .f-select, .f-textarea {
+    width: 100%; background: var(--bg); border: 1px solid var(--border2);
+    color: var(--text); padding: 8px 12px; border-radius: 8px; font-size: 14px;
+    font-family: 'DM Sans', sans-serif; outline: none;
+  }
+  .f-input:focus, .f-select:focus, .f-textarea:focus { border-color: var(--accent); }
+  .f-textarea { min-height: 80px; resize: vertical; }
+  .f-select option { background: var(--surface); }
+  .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+  .section-divider {
+    border-top: 1px solid var(--border); margin: 16px 0; padding-top: 14px;
+  }
+  .section-label {
+    color: var(--muted); font-size: 10px; font-weight: 700;
+    letter-spacing: 1px; text-transform: uppercase; margin-bottom: 12px;
+  }
+
+  /* Segmented */
+  .segmented {
+    display: flex; background: var(--bg); border-radius: 8px; padding: 3px; gap: 2px;
+  }
+  .seg-btn {
+    flex: 1; padding: 6px 8px; border-radius: 6px; font-size: 12px; font-weight: 600;
+    background: transparent; color: var(--muted); border: none;
+  }
+  .seg-btn.active { background: var(--accent); color: #fff; }
+
+  /* Bool buttons */
+  .bool-row { display: flex; gap: 8px; }
+  .bool-btn {
+    flex: 1; padding: 8px; border-radius: 8px; font-size: 13px; font-weight: 600;
+    background: transparent; color: var(--muted); border: 2px solid var(--border2);
+  }
+  .bool-btn.active { border-color: var(--accent); color: var(--accent); background: #1d4ed822; }
+
+  /* Autocomplete */
+  .autocomplete { position: relative; }
+  .ac-dropdown {
+    position: absolute; top: 100%; left: 0; right: 0;
+    background: var(--surface2); border: 1px solid var(--border2);
+    border-radius: 8px; z-index: 10; margin-top: 4px; overflow: hidden;
+  }
+  .ac-item {
+    padding: 8px 12px; cursor: pointer; color: var(--text); font-size: 14px;
+    border-bottom: 1px solid var(--border);
+  }
+  .ac-item:hover { background: var(--border); }
+  .ac-item:last-child { border-bottom: none; }
+
+  /* Form actions */
+  .form-actions { display: flex; gap: 10px; justify-content: flex-end; margin-top: 8px; }
+  .btn-save {
+    padding: 9px 22px; background: var(--accent); border-radius: 8px;
+    color: #fff; font-weight: 700; font-size: 14px; border: none;
+  }
+  .btn-save:hover { background: var(--accent2); }
+  .btn-cancel {
+    padding: 9px 18px; background: var(--surface2); border-radius: 8px;
+    color: var(--muted2); font-weight: 600; font-size: 14px; border: none;
+  }
+
+  /* Setup */
+  .setup-tip {
+    background: #0c2040; border: 1px solid #1e4070; border-radius: 10px;
+    padding: 12px 16px; margin-bottom: 18px; color: #7cb8f0;
+    font-size: 13px; line-height: 1.6;
+  }
+  .setup-tip code {
+    background: #0f172a; padding: 2px 6px; border-radius: 4px;
+    color: var(--accent2); font-size: 12px;
+  }
+  .divider-or {
+    display: flex; align-items: center; gap: 10px; margin: 16px 0;
+    color: var(--muted); font-size: 12px;
+  }
+  .divider-or::before, .divider-or::after {
+    content: ''; flex: 1; height: 1px; background: var(--border);
+  }
+  .btn-connect {
+    width: 100%; padding: 10px; background: var(--surface2);
+    border: 1px solid var(--border2); border-radius: 8px;
+    color: var(--muted2); font-weight: 700; font-size: 14px;
+    font-family: 'DM Sans', sans-serif;
+  }
+  .btn-connect:hover { color: var(--text); border-color: var(--muted); }
+  .btn-create {
+    width: 100%; padding: 10px; background: var(--accent); border-radius: 8px;
+    color: #fff; font-weight: 700; font-size: 14px; margin-bottom: 16px;
+    font-family: 'DM Sans', sans-serif; border: none;
+  }
+  .btn-create:disabled { opacity: 0.4; cursor: not-allowed; }
+  .error-msg { color: var(--red); font-size: 13px; margin-top: 10px; text-align: center; }
+  .current-gist {
+    background: var(--bg); border-radius: 8px; padding: 10px 14px; margin-bottom: 16px;
+    font-size: 12px; color: var(--muted);
+  }
+  .current-gist code { color: var(--accent); font-size: 11px; word-break: break-all; }
+
+  @media (max-width: 480px) {
+    .stats { grid-template-columns: repeat(2,1fr); }
+    .grid-2 { grid-template-columns: 1fr; }
+    .header-inner { gap: 8px; }
+  }
+</style>
+</head>
+<body>
+
+<div id="app"></div>
+
+<script type="module">
+import { h, render } from 'https://esm.sh/preact@10.20.1';
+import { useState, useEffect, useRef, useCallback } from 'https://esm.sh/preact@10.20.1/hooks';
+import htm from 'https://esm.sh/htm@3.1.1';
+const html = htm.bind(h);
+
+// ── Constants ─────────────────────────────────────────────────────────────────
+const GIST_FILENAME = 'olmaps_routes.json';
+const MONTHS = ['Enero','Febrero','Marzo','Abril','Mayo','Junio','Julio','Agosto','Septiembre','Octubre','Noviembre','Diciembre'];
+const STATES = [{v:'pendiente',l:'🔭 Pendiente'},{v:'hecha',l:'✅ Hecha'},{v:'favorita',l:'⭐ Favorita'}];
+const ACTS   = [{v:'senderismo',l:'🚶🏾‍♀️ Senderismo'},{v:'bici',l:'🚲 Bici'},{v:'correr',l:'🏃🏾‍♀️ Correr'}];
+const DIFFS  = [{v:'baja',l:'🟢 Baja'},{v:'media',l:'🟠 Media'},{v:'alta',l:'🔴 Alta'}];
+const SHADOWS= ['Poca','Media','Mucha'];
+const CROWDS = ['Poca','Media','Mucha'];
+
+const stateColor = s => s==='favorita'?'#f59e0b':s==='hecha'?'#22c55e':'#64748b';
+const diffColor  = d => d==='alta'?'#ef4444':d==='media'?'#f97316':'#22c55e';
+const actIcon    = a => a==='bici'?'🚲':a==='correr'?'🏃🏾‍♀️':'🚶🏾‍♀️';
+
+const emptyRoute = () => ({
+  id: Date.now(), nombre:'', enlace:'', estado:'pendiente',
+  estacion:'', actividad:'senderismo', kms:'', dificultad:'media',
+  mes:'', fuentes:false, sombra:'Media', masificacion:'Media', notas:'',
+});
+
+// ── GitHub Gist ───────────────────────────────────────────────────────────────
+const gh = (token, path, opts={}) => fetch(`https://api.github.com${path}`, {
+  ...opts,
+  headers: { Authorization:`token ${token}`, Accept:'application/vnd.github.v3+json',
+    'Content-Type':'application/json', ...(opts.headers||{}) },
+});
+
+async function fetchGist(token, id) {
+  const r = await gh(token, `/gists/${id}`);
+  if (!r.ok) throw new Error(`Error ${r.status}`);
+  const d = await r.json();
+  const f = d.files[GIST_FILENAME];
+  return f ? JSON.parse(f.content) : [];
+}
+
+async function saveGist(token, id, routes) {
+  const r = await gh(token, `/gists/${id}`, {
+    method:'PATCH',
+    body: JSON.stringify({ files:{ [GIST_FILENAME]:{ content: JSON.stringify(routes,null,2) } } }),
+  });
+  if (!r.ok) throw new Error(`Error ${r.status}`);
+}
+
+async function createGist(token) {
+  const r = await gh(token, '/gists', {
+    method:'POST',
+    body: JSON.stringify({
+      description:'OlMaps — mis rutas', public:false,
+      files:{ [GIST_FILENAME]:{ content: JSON.stringify([],null,2) } },
+    }),
+  });
+  if (!r.ok) throw new Error(`Error ${r.status}`);
+  const d = await r.json();
+  return d.id;
+}
+
+// ── Tag component ─────────────────────────────────────────────────────────────
+function Tag({ children, color='#64748b' }) {
+  return html`<span class="tag" style=${{ background:color+'22', color, border:`1px solid ${color}44` }}>${children}</span>`;
+}
+
+// ── Segmented control ─────────────────────────────────────────────────────────
+function Seg({ options, value, onChange }) {
+  return html`
+    <div class="segmented">
+      ${options.map(o => html`
+        <button class=${'seg-btn'+(value===o.v?' active':'')} onClick=${()=>onChange(o.v)}>${o.l}</button>
+      `)}
+    </div>`;
+}
+
+// ── Modal ─────────────────────────────────────────────────────────────────────
+function Modal({ title, onClose, children }) {
+  return html`
+    <div class="modal-overlay" onClick=${onClose}>
+      <div class="modal" onClick=${e=>e.stopPropagation()}>
+        <div class="modal-head">
+          <h2>${title}</h2>
+          <button class="modal-close" onClick=${onClose}>✕</button>
+        </div>
+        ${children}
+      </div>
+    </div>`;
+}
+
+// ── Route form ────────────────────────────────────────────────────────────────
+function RouteForm({ initial, allEstaciones, onSave, onCancel }) {
+  const [r, setR] = useState(initial);
+  const [showAc, setShowAc] = useState(false);
+  const set = (k,v) => setR(p => ({...p,[k]:v}));
+
+  const filtered = allEstaciones.filter(e =>
+    e.toLowerCase().includes((r.estacion||'').toLowerCase()) && e !== r.estacion
+  );
+
+  return html`
+    <div>
+      <div class="field">
+        <label>Nombre de la ruta</label>
+        <input class="f-input" value=${r.nombre} onInput=${e=>set('nombre',e.target.value)} placeholder="Ej: Camino del Norte" />
+      </div>
+      <div class="field">
+        <label>🔗 Enlace</label>
+        <input class="f-input" value=${r.enlace} onInput=${e=>set('enlace',e.target.value)} placeholder="https://..." />
+      </div>
+      <div class="field">
+        <label>Estado</label>
+        <${Seg} options=${STATES} value=${r.estado} onChange=${v=>set('estado',v)} />
+      </div>
+      <div class="field">
+        <label>Actividad</label>
+        <${Seg} options=${ACTS} value=${r.actividad} onChange=${v=>set('actividad',v)} />
+      </div>
+      <div class="grid-2">
+        <div class="field">
+          <label>Kms</label>
+          <input class="f-input" type="number" value=${r.kms} onInput=${e=>set('kms',e.target.value)} placeholder="0" />
+        </div>
+        <div class="field">
+          <label>Dificultad</label>
+          <select class="f-select" value=${r.dificultad} onChange=${e=>set('dificultad',e.target.value)}>
+            ${DIFFS.map(d => html`<option value=${d.v}>${d.l}</option>`)}
+          </select>
+        </div>
+      </div>
+      <div class="field">
+        <label>Estación / temporada</label>
+        <div class="autocomplete">
+          <input class="f-input" value=${r.estacion}
+            onInput=${e=>{set('estacion',e.target.value);setShowAc(true);}}
+            onFocus=${()=>setShowAc(true)}
+            onBlur=${()=>setTimeout(()=>setShowAc(false),150)}
+            placeholder="Ej: Primavera, Verano…" />
+          ${showAc && filtered.length>0 && html`
+            <div class="ac-dropdown">
+              ${filtered.map(e => html`
+                <div class="ac-item" onMouseDown=${()=>{set('estacion',e);setShowAc(false);}}>${e}</div>
+              `)}
+            </div>`}
+        </div>
+      </div>
+
+      <div class="section-divider">
+        <p class="section-label">🌿 Entorno</p>
+        <div class="field">
+          <label>🗓️ Mes en que hice la ruta</label>
+          <select class="f-select" value=${r.mes} onChange=${e=>set('mes',e.target.value)}>
+            <option value="">— Sin especificar —</option>
+            ${MONTHS.map(m => html`<option value=${m}>${m}</option>`)}
+          </select>
+        </div>
+        <div class="grid-2">
+          <div class="field">
+            <label>🌳 Sombra</label>
+            <select class="f-select" value=${r.sombra} onChange=${e=>set('sombra',e.target.value)}>
+              ${SHADOWS.map(s => html`<option>${s}</option>`)}
+            </select>
+          </div>
+          <div class="field">
+            <label>🧑‍🧑‍🧒‍🧒 Masificación</label>
+            <select class="f-select" value=${r.masificacion} onChange=${e=>set('masificacion',e.target.value)}>
+              ${CROWDS.map(c => html`<option>${c}</option>`)}
+            </select>
+          </div>
+        </div>
+        <div class="field">
+          <label>⛲ ¿Hay fuentes?</label>
+          <div class="bool-row">
+            <button class=${'bool-btn'+(r.fuentes===true?' active':'')} onClick=${()=>set('fuentes',true)}>⛲ Sí</button>
+            <button class=${'bool-btn'+(r.fuentes===false?' active':'')} onClick=${()=>set('fuentes',false)}>🚫 No</button>
+          </div>
+        </div>
+        <div class="field">
+          <label>📝 Notas</label>
+          <textarea class="f-textarea" value=${r.notas}
+            onInput=${e=>set('notas',e.target.value)}
+            placeholder="Observaciones, terreno, consejos…" />
+        </div>
+      </div>
+
+      <div class="form-actions">
+        <button class="btn-cancel" onClick=${onCancel}>Cancelar</button>
+        <button class="btn-save" onClick=${()=>onSave(r)}>💾 Guardar</button>
+      </div>
+    </div>`;
+}
+
+// ── Route card ────────────────────────────────────────────────────────────────
+function RouteCard({ route, onEdit, onDelete }) {
+  const [open, setOpen] = useState(false);
+  const sc = stateColor(route.estado);
+  const dc = diffColor(route.dificultad);
+  const stateLabel = STATES.find(s=>s.v===route.estado)?.l;
+  const diffLabel  = DIFFS.find(d=>d.v===route.dificultad)?.l;
+
+  return html`
+    <div class="route-card">
+      <div class="card-header" onClick=${()=>setOpen(p=>!p)}>
+        <span class="card-act-icon">${actIcon(route.actividad)}</span>
+        <div class="card-body">
+          <div class="card-title">
+            ${route.nombre||'Sin nombre'}
+            <${Tag} color=${sc}>${stateLabel}</${Tag}>
+          </div>
+          <div class="card-tags">
+            ${route.kms && html`<${Tag} color="#64748b">📏 ${route.kms} km</${Tag}>`}
+            <${Tag} color=${dc}>${diffLabel}</${Tag}>
+            ${route.mes && html`<${Tag} color="#8b5cf6">🗓️ ${route.mes}</${Tag}>`}
+            ${route.estacion && html`<${Tag} color="#0891b2">🌤️ ${route.estacion}</${Tag}>`}
+          </div>
+        </div>
+        <span class="chevron">${open?'▲':'▼'}</span>
+      </div>
+
+      ${open && html`
+        <div class="card-detail">
+          ${route.enlace && html`
+            <a class="detail-link" href=${route.enlace} target="_blank" rel="noreferrer">🔗 Abrir ruta</a>
+          `}
+          <div class="detail-env">
+            <${Tag} color=${route.fuentes?'#22c55e':'#ef4444'}>
+              ${route.fuentes?'⛲ Fuentes':'🚫 Sin fuentes'}
+            </${Tag}>
+            <${Tag} color="#f59e0b">🌳 Sombra: ${route.sombra}</${Tag}>
+            <${Tag} color="#8b5cf6">🧑‍🧑‍🧒‍🧒 Masif: ${route.masificacion}</${Tag}>
+          </div>
+          ${route.notas && html`<div class="notes-box">📝 ${route.notas}</div>`}
+          <div class="card-actions">
+            <button class="btn-ghost" onClick=${()=>onEdit(route)}>✏️ Editar</button>
+            <button class="btn-danger" onClick=${()=>onDelete(route.id)}>🗑️ Borrar</button>
+          </div>
+        </div>
+      `}
+    </div>`;
+}
+
+// ── Setup modal ───────────────────────────────────────────────────────────────
+function GistSetup({ currentGistId, onSave, onDisconnect }) {
+  const [token, setToken] = useState('');
+  const [gistId, setGistId] = useState('');
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState('');
+
+  const handleCreate = async () => {
+    setLoading(true); setError('');
+    try { const id = await createGist(token); onSave(token, id); }
+    catch(e) { setError(e.message); }
+    setLoading(false);
+  };
+  const handleConnect = async () => {
+    setLoading(true); setError('');
+    try { await fetchGist(token, gistId); onSave(token, gistId); }
+    catch { setError('No se pudo conectar. Revisa el token y el ID.'); }
+    setLoading(false);
+  };
+
+  return html`
+    <div>
+      ${currentGistId && html`
+        <div class="current-gist">
+          Gist actual: <code>${currentGistId}</code><br/>
+          <button class="btn-danger" style=${{marginTop:'8px'}} onClick=${onDisconnect}>Desconectar</button>
+        </div>
+      `}
+      <div class="setup-tip">
+        <strong>¿Cómo obtener el token?</strong><br/>
+        GitHub → Settings → Developer settings → Personal access tokens → Tokens (classic) → New token → marca solo <code>gist</code> → genera y copia.
+      </div>
+      <div class="field">
+        <label>GitHub Token (permiso gist)</label>
+        <input class="f-input" type="password" value=${token}
+          onInput=${e=>setToken(e.target.value)} placeholder="ghp_…" />
+      </div>
+      <button class="btn-create" onClick=${handleCreate} disabled=${!token||loading}>
+        ${loading?'Creando…':'✨ Crear nuevo Gist para OlMaps'}
+      </button>
+      <div class="divider-or">o conectar uno existente</div>
+      <div class="field">
+        <label>ID del Gist existente</label>
+        <input class="f-input" value=${gistId}
+          onInput=${e=>setGistId(e.target.value)} placeholder="abc123def456…" />
+      </div>
+      <button class="btn-connect" onClick=${handleConnect} disabled=${!token||!gistId||loading}>
+        ${loading?'Conectando…':'🔗 Conectar Gist existente'}
+      </button>
+      ${error && html`<p class="error-msg">${error}</p>`}
+    </div>`;
+}
+
+// ── App ───────────────────────────────────────────────────────────────────────
+function App() {
+  const [routes, setRoutes]         = useState([]);
+  const [token, setToken]           = useState(() => localStorage.getItem('olmaps_token')||'');
+  const [gistId, setGistId]         = useState(() => localStorage.getItem('olmaps_gist')||'');
+  const [syncing, setSyncing]       = useState(false);
+  const [lastSync, setLastSync]     = useState(null);
+  const [syncError, setSyncError]   = useState('');
+  const [showSetup, setShowSetup]   = useState(false);
+  const [showForm, setShowForm]     = useState(false);
+  const [editRoute, setEditRoute]   = useState(null);
+  const [filterState, setFilterState]   = useState('all');
+  const [filterAct, setFilterAct]       = useState('all');
+  const [search, setSearch]             = useState('');
+
+  const connected = !!(token && gistId);
+
+  useEffect(() => {
+    if (connected) load();
+    else setShowSetup(true);
+  }, []);
+
+  async function load() {
+    setSyncing(true); setSyncError('');
+    try { const d = await fetchGist(token, gistId); setRoutes(d); setLastSync(new Date()); }
+    catch(e) { setSyncError(e.message); }
+    setSyncing(false);
+  }
+
+  async function push(next) {
+    if (!connected) return;
+    setSyncing(true); setSyncError('');
+    try { await saveGist(token, gistId, next); setLastSync(new Date()); }
+    catch(e) { setSyncError(e.message); }
+    setSyncing(false);
+  }
+
+  function handleSetupSave(t, g) {
+    localStorage.setItem('olmaps_token', t);
+    localStorage.setItem('olmaps_gist', g);
+    setToken(t); setGistId(g); setShowSetup(false);
+    setTimeout(() => load(), 100);
+  }
+
+  function handleDisconnect() {
+    localStorage.removeItem('olmaps_token');
+    localStorage.removeItem('olmaps_gist');
+    setToken(''); setGistId(''); setRoutes([]); setShowSetup(false);
+  }
+
+  function handleSave(r) {
+    const next = editRoute
+      ? routes.map(x => x.id===r.id ? r : x)
+      : [{ ...r, id:Date.now() }, ...routes];
+    setRoutes(next); push(next);
+    setShowForm(false); setEditRoute(null);
+  }
+
+  function handleDelete(id) {
+    if (!confirm('¿Borrar esta ruta?')) return;
+    const next = routes.filter(r => r.id!==id);
+    setRoutes(next); push(next);
+  }
+
+  const allEstaciones = [...new Set(routes.map(r=>r.estacion).filter(Boolean))];
+
+  const filtered = routes.filter(r => {
+    if (filterState!=='all' && r.estado!==filterState) return false;
+    if (filterAct!=='all' && r.actividad!==filterAct) return false;
+    if (search && !r.nombre.toLowerCase().includes(search.toLowerCase())) return false;
+    return true;
+  });
+
+  const stats = {
+    total: routes.length,
+    hechas: routes.filter(r=>r.estado==='hecha').length,
+    favoritas: routes.filter(r=>r.estado==='favorita').length,
+    kms: routes.filter(r=>r.kms).reduce((a,r)=>a+Number(r.kms),0),
+  };
+
+  const syncStatus = syncing ? '⏳ Sincronizando…'
+    : syncError ? syncError
+    : lastSync ? `✅ Sync ${lastSync.toLocaleTimeString('es',{hour:'2-digit',minute:'2-digit'})}`
+    : connected ? '🔗 Conectado a Gist'
+    : '⚠️ Sin conexión';
+
+  return html`
+    <div>
+      <!-- Header -->
+      <header class="header">
+        <div class="header-inner">
+          <div class="logo">
+            <h1>🗺️ <span>Ol</span>Maps</h1>
+            <p class=${syncError?'sync-error':''}>${syncStatus}</p>
+          </div>
+          ${connected && html`<button class="btn-ghost" onClick=${load}>↻ Sync</button>`}
+          <button class="btn-ghost" onClick=${()=>setShowSetup(true)}>⚙️</button>
+          <button class="btn-primary" onClick=${()=>{setEditRoute(null);setShowForm(true);}}>+ Nueva</button>
+        </div>
+      </header>
+
+      <main class="main">
+        <!-- Stats -->
+        ${routes.length>0 && html`
+          <div class="stats">
+            ${[
+              {icon:'🗺️',val:stats.total,lbl:'Total',color:'#3b82f6'},
+              {icon:'✅',val:stats.hechas,lbl:'Hechas',color:'#22c55e'},
+              {icon:'⭐',val:stats.favoritas,lbl:'Favoritas',color:'#f59e0b'},
+              {icon:'📏',val:stats.kms||'—',lbl:'Kms',color:'#8b5cf6'},
+            ].map(s => html`
+              <div class="stat-card">
+                <div class="stat-icon">${s.icon}</div>
+                <div class="stat-val" style=${{color:s.color}}>${s.val}</div>
+                <div class="stat-lbl">${s.lbl}</div>
+              </div>
+            `)}
+          </div>
+        `}
+
+        <!-- Filters -->
+        <div class="filters">
+          <input class="search-input" value=${search}
+            onInput=${e=>setSearch(e.target.value)} placeholder="🔍 Buscar por nombre…" />
+          <div class="filter-row">
+            ${[{v:'all',l:'Todas'},...STATES].map(s => html`
+              <button class=${'filter-chip'+(filterState===s.v?' active-state':'')}
+                onClick=${()=>setFilterState(s.v)}>${s.l}</button>
+            `)}
+          </div>
+          <div class="filter-row">
+            ${[{v:'all',l:'🗂️ Todas'},...ACTS].map(a => html`
+              <button class=${'filter-chip'+(filterAct===a.v?' active-act':'')}
+                onClick=${()=>setFilterAct(a.v)}>${a.l}</button>
+            `)}
+          </div>
+        </div>
+
+        <!-- Routes -->
+        ${filtered.length===0 ? html`
+          <div class="empty">
+            <div class="empty-icon">🗺️</div>
+            <p>${routes.length===0
+              ? 'Aún no hay rutas.\n¡Añade tu primera ruta!'
+              : 'No hay rutas con estos filtros.'}</p>
+          </div>
+        ` : filtered.map(r => html`
+          <${RouteCard} key=${r.id} route=${r}
+            onEdit=${route=>{setEditRoute(route);setShowForm(true);}}
+            onDelete=${handleDelete} />
+        `)}
+      </main>
+
+      <!-- Modals -->
+      ${showForm && html`
+        <${Modal} title=${editRoute?'✏️ Editar ruta':'✨ Nueva ruta'}
+          onClose=${()=>{setShowForm(false);setEditRoute(null);}}>
+          <${RouteForm}
+            initial=${editRoute||emptyRoute()}
+            allEstaciones=${allEstaciones}
+            onSave=${handleSave}
+            onCancel=${()=>{setShowForm(false);setEditRoute(null);}} />
+        </${Modal}>
+      `}
+
+      ${showSetup && html`
+        <${Modal} title="⚙️ Configurar sincronización" onClose=${()=>setShowSetup(false)}>
+          <${GistSetup}
+            currentGistId=${gistId}
+            onSave=${handleSetupSave}
+            onDisconnect=${handleDisconnect} />
+        </${Modal}>
+      `}
+    </div>`;
+}
+
+render(html`<${App}/>`, document.getElementById('app'));
+</script>
+</body>
+</html>

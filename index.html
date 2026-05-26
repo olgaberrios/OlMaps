@@ -4,6 +4,12 @@
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
 <title>🗺️ OlMaps</title>
+<link rel="manifest" href="manifest.json"/>
+<link rel="apple-touch-icon" href="icon.png"/>
+<meta name="apple-mobile-web-app-capable" content="yes"/>
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"/>
+<meta name="apple-mobile-web-app-title" content="OlMaps"/>
+<meta name="theme-color" content="#1b4332"/>
 <link rel="preconnect" href="https://fonts.googleapis.com"/>
 <link href="https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet"/>
 <style>
@@ -152,7 +158,6 @@ const html=htm.bind(h);
 
 // ── Data ──────────────────────────────────────────────────────────────────────
 const GIST_FILE='olmaps_routes.json';
-const MONTHS=['Enero','Febrero','Marzo','Abril','Mayo','Junio','Julio','Agosto','Septiembre','Octubre','Noviembre','Diciembre'];
 const STATES=[{v:'pendiente',l:'🔭 Pendiente'},{v:'hecha',l:'✅ Hecha'},{v:'favorita',l:'⭐ Favorita'}];
 const ACTS=[{v:'senderismo',l:'🚶🏾‍♀️ Senderismo'},{v:'bici',l:'🚲 Bici'},{v:'correr',l:'🏃🏾‍♀️ Correr'}];
 const DIFFS=[{v:'baja',l:'🟢 Baja'},{v:'media',l:'🟠 Media'},{v:'alta',l:'🔴 Alta'}];
@@ -162,7 +167,7 @@ const CROWDS=['Poca','Media','Mucha'];
 const sColor=s=>s==='favorita'?'#c49a0a':s==='hecha'?'#2d6a4f':'#6e5c42';
 const dColor=d=>d==='alta'?'#b83c0c':d==='media'?'#d4712a':'#2d6a4f';
 const aIcon=a=>a==='bici'?'🚲':a==='correr'?'🏃🏾‍♀️':'🚶🏾‍♀️';
-const newRoute=()=>({id:Date.now(),nombre:'',enlace:'',estado:'pendiente',estTren:'',actividad:'senderismo',kms:'',dificultad:'media',mes:'',fuentes:false,sombra:'Media',masificacion:'Media',notas:''});
+const newRoute=()=>({id:Date.now(),nombre:'',enlace:'',estado:'pendiente',estTren:'',actividad:'senderismo',kms:'',dificultad:'media',fecha:'',fuentes:false,sombra:'Media',masificacion:'Media',notas:''});
 
 // ── GitHub Gist ───────────────────────────────────────────────────────────────
 const ghFetch=(token,path,opts={})=>fetch('https://api.github.com'+path,{...opts,headers:{Authorization:'token '+token,Accept:'application/vnd.github.v3+json','Content-Type':'application/json',...(opts.headers||{})}});
@@ -261,11 +266,8 @@ function RouteForm({initial,allTren,onSave,onCancel}){
       <${AcField} label="🚂 Estación de tren / bus" value=${r.estTren} onChange=${v=>set('estTren',v)} suggestions=${allTren} placeholder="Ej: Colmenar Viejo, Cercedilla…"/>
       <div class="sec">
         <p class="sec-lbl">🌿 Entorno</p>
-        <div class="field"><label>🗓️ Mes en que hice la ruta</label>
-          <select class="fs" value=${r.mes} onChange=${e=>set('mes',e.target.value)}>
-            <option value="">— Sin especificar —</option>
-            ${MONTHS.map(m=>html`<option value=${m}>${m}</option>`)}
-          </select>
+        <div class="field"><label>🗓️ Fecha de realización (opcional)</label>
+          <input class="fi" type="date" value=${r.fecha} onChange=${e=>set('fecha',e.target.value)}/>
         </div>
         <div class="g2">
           <div class="field"><label>🌳 Sombra</label>
@@ -316,7 +318,7 @@ function RouteCard({route,onEdit,onDelete}){
             ${route.kms&&html`<${Tag} color="#7b5e3a">📏 ${route.kms} km</${Tag}>`}
             <${Tag} color=${dc}>${dl}</${Tag}>
             ${route.estTren&&html`<${Tag} color="#1a6060">🚂 ${route.estTren}</${Tag}>`}
-            ${route.mes&&html`<${Tag} color="#614880">🗓️ ${route.mes}</${Tag}>`}
+            ${route.fecha&&html`<${Tag} color="#614880">🗓️ ${route.fecha}</${Tag}>`}
           </div>
         </div>
         <span class="chevron">${open?'▲':'▼'}</span>
@@ -452,6 +454,18 @@ function App(){
     if(fTren!=='all'&&r.estTren!==fTren)return false;
     if(search&&!r.nombre.toLowerCase().includes(search.toLowerCase()))return false;
     return true;
+  }).slice().sort((a,b)=>{
+    const aHecha=a.estado==='hecha';
+    const bHecha=b.estado==='hecha';
+    if(aHecha&&bHecha){
+      // hechas: más antiguas arriba (fecha asc), sin fecha al final
+      if(!a.fecha&&!b.fecha)return 0;
+      if(!a.fecha)return 1;
+      if(!b.fecha)return -1;
+      return a.fecha.localeCompare(b.fecha);
+    }
+    // no hechas: más recientes arriba (id desc)
+    return b.id-a.id;
   });
 
   const stats={

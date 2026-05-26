@@ -1,0 +1,17 @@
+{
+  "name": "OlMaps",
+  "short_name": "OlMaps",
+  "description": "Mis rutas guardadas",
+  "start_url": "/OlMaps/",
+  "display": "standalone",
+  "background_color": "#1b4332",
+  "theme_color": "#1b4332",
+  "icons": [
+    {
+      "src": "icon.png",
+      "sizes": "1024x1024",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ]
+}

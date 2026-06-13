@@ -158,16 +158,16 @@ const html=htm.bind(h);
 
 // ── Data ──────────────────────────────────────────────────────────────────────
 const GIST_FILE='olmaps_routes.json';
-const STATES=[{v:'pendiente',l:'🔭 Pendiente'},{v:'hecha',l:'✅ Hecha'},{v:'favorita',l:'⭐ Favorita'}];
+const FILTERS=[{v:'pendiente',l:'🔭 Pendientes'},{v:'hecha',l:'✅ Hechas'},{v:'favorita',l:'⭐ Favoritas'}];
 const ACTS=[{v:'senderismo',l:'🚶🏾‍♀️ Senderismo'},{v:'bici',l:'🚲 Bici'},{v:'correr',l:'🏃🏾‍♀️ Correr'}];
 const DIFFS=[{v:'baja',l:'🟢 Baja'},{v:'media',l:'🟠 Media'},{v:'alta',l:'🔴 Alta'}];
 const SHADOWS=['Poca','Media','Mucha'];
 const CROWDS=['Poca','Media','Mucha'];
 
-const sColor=s=>s==='favorita'?'#c49a0a':s==='hecha'?'#2d6a4f':'#6e5c42';
+const sColor=(hecha,favorita)=>favorita?'#c49a0a':hecha?'#2d6a4f':'#6e5c42';
 const dColor=d=>d==='alta'?'#b83c0c':d==='media'?'#d4712a':'#2d6a4f';
 const aIcon=a=>a==='bici'?'🚲':a==='correr'?'🏃🏾‍♀️':'🚶🏾‍♀️';
-const newRoute=()=>({id:Date.now(),nombre:'',enlace:'',estado:'pendiente',estTren:'',actividad:'senderismo',kms:'',dificultad:'media',fecha:'',fuentes:false,sombra:'Media',masificacion:'Media',notas:''});
+const newRoute=()=>({id:Date.now(),nombre:'',enlace:'',hecha:false,favorita:false,estTren:'',actividad:'senderismo',kms:'',dificultad:'media',fecha:'',fuentes:false,sombra:'Media',masificacion:'Media',notas:''});
 
 // ── GitHub Gist ───────────────────────────────────────────────────────────────
 const ghFetch=(token,path,opts={})=>fetch('https://api.github.com'+path,{...opts,headers:{Authorization:'token '+token,Accept:'application/vnd.github.v3+json','Content-Type':'application/json',...(opts.headers||{})}});
@@ -248,7 +248,10 @@ function RouteForm({initial,allTren,onSave,onCancel}){
         <input class="fi" value=${r.enlace} onInput=${e=>set('enlace',e.target.value)} placeholder="https://..."/>
       </div>
       <div class="field"><label>Estado</label>
-        <${Seg} options=${STATES} value=${r.estado} onChange=${v=>set('estado',v)}/>
+        <div class="bool-row">
+          <button class=${'bool-btn'+(r.hecha?' on':'')} onClick=${()=>set('hecha',!r.hecha)}>✅ Hecha</button>
+          <button class=${'bool-btn'+(r.favorita?' on':'')} onClick=${()=>set('favorita',!r.favorita)}>⭐ Favorita</button>
+        </div>
       </div>
       <div class="field"><label>Actividad</label>
         <${Seg} options=${ACTS} value=${r.actividad} onChange=${v=>set('actividad',v)}/>
@@ -301,9 +304,7 @@ function RouteForm({initial,allTren,onSave,onCancel}){
 // ── Route card ────────────────────────────────────────────────────────────────
 function RouteCard({route,onEdit,onDelete}){
   const [open,setOpen]=useState(false);
-  const sc=sColor(route.estado);
   const dc=dColor(route.dificultad);
-  const sl=STATES.find(s=>s.v===route.estado)?.l;
   const dl=DIFFS.find(d=>d.v===route.dificultad)?.l;
   return html`
     <div class="route-card">
@@ -312,7 +313,9 @@ function RouteCard({route,onEdit,onDelete}){
         <div class="card-body">
           <div class="card-title">
             ${route.nombre||'Sin nombre'}
-            <${Tag} color=${sc}>${sl}</${Tag}>
+            ${route.hecha&&html`<${Tag} color="#2d6a4f">✅ Hecha</${Tag}>`}
+            ${route.favorita&&html`<${Tag} color="#c49a0a">⭐ Favorita</${Tag}>`}
+            ${!route.hecha&&!route.favorita&&html`<${Tag} color="#6e5c42">🔭 Pendiente</${Tag}>`}
           </div>
           <div class="card-tags">
             ${route.kms&&html`<${Tag} color="#7b5e3a">📏 ${route.kms} km</${Tag}>`}
@@ -413,7 +416,17 @@ function App(){
 
   async function load(){
     setSyncing(true);setSyncErr('');
-    try{const d=await loadGist(token,gistId);setRoutes(d);setLastSync(new Date());}
+    try{
+      const d=await loadGist(token,gistId);
+      const migrated=d.map(r=>{
+        if(r.estado!==undefined){
+          const {estado,...rest}=r;
+          return {...rest,hecha:estado==='hecha',favorita:estado==='favorita'};
+        }
+        return r;
+      });
+      setRoutes(migrated);setLastSync(new Date());
+    }
     catch(e){setSyncErr(e.message);}
     setSyncing(false);
   }
@@ -449,29 +462,30 @@ function App(){
   const allTren=[...new Set(routes.map(r=>r.estTren).filter(Boolean))].sort();
 
   const filtered=routes.filter(r=>{
-    if(fState!=='all'&&r.estado!==fState)return false;
+    if(fState==='pendiente'&&r.hecha)return false;
+    if(fState==='hecha'&&!r.hecha)return false;
+    if(fState==='favorita'&&!r.favorita)return false;
     if(fAct!=='all'&&r.actividad!==fAct)return false;
     if(fTren!=='all'&&r.estTren!==fTren)return false;
     if(search&&!r.nombre.toLowerCase().includes(search.toLowerCase()))return false;
     return true;
   }).slice().sort((a,b)=>{
-    const aHecha=a.estado==='hecha';
-    const bHecha=b.estado==='hecha';
-    if(aHecha&&bHecha){
-      // hechas: más antiguas arriba (fecha asc), sin fecha al final
+    if(a.hecha&&b.hecha){
+      // hechas: más recientes arriba, más antiguas abajo, sin fecha al final
       if(!a.fecha&&!b.fecha)return 0;
       if(!a.fecha)return 1;
       if(!b.fecha)return -1;
-      return a.fecha.localeCompare(b.fecha);
+      return b.fecha.localeCompare(a.fecha);
     }
-    // no hechas: más recientes arriba (id desc)
+    if(a.hecha!==b.hecha)return a.hecha?1:-1; // pendientes arriba, hechas abajo
+    // pendientes: por orden añadido, la última añadida arriba
     return b.id-a.id;
   });
 
   const stats={
     total:routes.length,
-    hechas:routes.filter(r=>r.estado==='hecha').length,
-    favoritas:routes.filter(r=>r.estado==='favorita').length,
+    hechas:routes.filter(r=>r.hecha).length,
+    favoritas:routes.filter(r=>r.favorita).length,
     kms:routes.filter(r=>r.kms).reduce((a,r)=>a+Number(r.kms),0),
   };
 
@@ -510,7 +524,7 @@ function App(){
         <div class="filters">
           <input class="search" value=${search} onInput=${e=>setSearch(e.target.value)} placeholder="🔍 Buscar por nombre…"/>
           <div class="filter-row">
-            ${[{v:'all',l:'Todas'},...STATES].map(s=>html`
+            ${[{v:'all',l:'Todas'},...FILTERS].map(s=>html`
               <button class=${'chip'+(fState===s.v?' cs':'')} onClick=${()=>setFState(s.v)}>${s.l}</button>`)}
           </div>
           <div class="filter-row">

@@ -412,9 +412,6 @@ function TrenFilter({allTren,allTerr,routes,defaultOpenTerr,fTren,setFTren}){
   if(groups.length===0)return null;
 
   return html`<div style=${{display:'flex',flexDirection:'column',gap:'4px'}}>
-    <div class="filter-row">
-      <button class=${'chip'+(fTren==='all'?' ct':'')} onClick=${()=>setFTren('all')}>🚂 Todas</button>
-    </div>
     ${groups.map(t=>html`<${TrenTerrGroup} key=${t} name=${t} stations=${byTerr[t]} defaultOpen=${t===defaultOpenTerr||t===''} fTren=${fTren} setFTren=${setFTren}/>`)}
   </div>`;
 }

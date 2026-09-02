@@ -15,23 +15,12 @@
 <style>
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
 :root{
-  --bg:#f2ede3;
-  --surface:#faf7f0;
-  --surface2:#e8e0d0;
-  --border:#cec4ae;
-  --border2:#b8ab94;
-  --text:#2a1f10;
-  --muted:#6e5c42;
-  --muted2:#4e3d26;
-  --accent:#2d6a4f;
-  --accent2:#40916c;
-  --accent3:#1b4332;
-  --brown:#7b5e3a;
-  --teal:#1a6060;
-  --amber:#c49a0a;
-  --red:#b83c0c;
-  --orange:#d4712a;
-  --purple:#614880;
+  --bg:#f2ede3;--surface:#faf7f0;--surface2:#e8e0d0;
+  --border:#cec4ae;--border2:#b8ab94;
+  --text:#2a1f10;--muted:#6e5c42;--muted2:#4e3d26;
+  --accent:#2d6a4f;--accent2:#40916c;--accent3:#1b4332;
+  --brown:#7b5e3a;--teal:#1a6060;--amber:#c49a0a;
+  --red:#b83c0c;--orange:#d4712a;--purple:#614880;
 }
 html{font-size:15px}
 body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;min-height:100vh;line-height:1.5}
@@ -39,23 +28,26 @@ h1,h2,h3{font-family:'Syne',sans-serif}
 button{font-family:'DM Sans',sans-serif;cursor:pointer;border:none;transition:all .15s}
 
 .header{background:var(--accent3);border-bottom:3px solid var(--brown);padding:14px 20px;position:sticky;top:0;z-index:100}
-.header-inner{max-width:680px;margin:0 auto;display:flex;align-items:center;gap:12px}
-.logo{flex:1}
+.header-inner{max-width:680px;margin:0 auto;display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.logo{flex:1;min-width:120px}
 .logo h1{font-size:20px;font-weight:800;letter-spacing:-.5px;color:#f0ead8}
 .logo h1 span{color:#95d5b2}
 .logo p{font-size:11px;color:#74c69d;margin-top:2px}
 .logo p.err{color:#ffb4a2}
+.header-btns{display:flex;gap:8px;align-items:center}
 
 .main{max-width:680px;margin:0 auto;padding:20px 16px 60px}
 
-.btn-primary{background:var(--accent);color:#fff;padding:8px 18px;border-radius:8px;font-weight:700;font-size:13px;border:2px solid var(--accent3)}
+.btn-primary{background:var(--accent);color:#fff;padding:8px 16px;border-radius:8px;font-weight:700;font-size:13px;border:2px solid var(--accent3)}
 .btn-primary:hover{background:var(--accent2)}
-.btn-ghost{background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.22);color:#d8f3dc;padding:7px 13px;border-radius:8px;font-size:12px;font-weight:600}
+.btn-ghost{background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.22);color:#d8f3dc;padding:7px 11px;border-radius:8px;font-size:12px;font-weight:600}
 .btn-ghost:hover{background:rgba(255,255,255,.22);color:#fff}
-.btn-outline{background:var(--surface2);border:1px solid var(--border2);color:var(--muted2);padding:6px 13px;border-radius:8px;font-size:12px;font-weight:600}
+.btn-outline{background:var(--surface2);border:1px solid var(--border2);color:var(--muted2);padding:6px 12px;border-radius:8px;font-size:12px;font-weight:600}
 .btn-outline:hover{border-color:var(--accent);color:var(--accent)}
-.btn-danger{background:#fceee8;color:var(--red);border:1px solid #f0c0a8;padding:6px 13px;border-radius:8px;font-size:12px;font-weight:600}
+.btn-danger{background:#fceee8;color:var(--red);border:1px solid #f0c0a8;padding:6px 12px;border-radius:8px;font-size:12px;font-weight:600}
 .btn-danger:hover{background:#f8ddd0}
+.btn-export{background:var(--brown);color:#fff;border:2px solid #5a3d1e;padding:7px 11px;border-radius:8px;font-size:12px;font-weight:700}
+.btn-export:hover{background:#9a7050}
 .btn-save{padding:9px 22px;background:var(--accent);border-radius:8px;color:#fff;font-weight:700;font-size:14px;border:2px solid var(--accent3)}
 .btn-save:hover{background:var(--accent2)}
 .btn-cancel{padding:9px 18px;background:var(--surface2);border-radius:8px;color:var(--muted2);font-weight:600;font-size:14px;border:1px solid var(--border2)}
@@ -77,10 +69,19 @@ button{font-family:'DM Sans',sans-serif;cursor:pointer;border:none;transition:al
 .chip.cs{background:var(--accent);color:#fff;border-color:var(--accent3)}
 .chip.ca{background:var(--brown);color:#fff;border-color:#5a3d1e}
 .chip.ct{background:var(--teal);color:#fff;border-color:#0e4040}
+.chip.cz{background:var(--purple);color:#fff;border-color:#3d2060}
 .search{width:100%;background:var(--surface);border:1px solid var(--border);color:var(--text);padding:9px 14px;border-radius:8px;font-size:14px;font-family:'DM Sans',sans-serif;outline:none}
 .search:focus{border-color:var(--accent)}
 
-.route-card{background:var(--surface);border:1px solid var(--border);border-radius:12px;overflow:hidden;margin-bottom:10px;transition:box-shadow .2s;box-shadow:0 1px 4px #0001}
+/* Territory group */
+.terr-group{margin-bottom:16px}
+.terr-head{display:flex;align-items:center;gap:8px;padding:8px 12px;background:var(--surface2);border:1px solid var(--border);border-radius:10px;cursor:pointer;user-select:none;margin-bottom:6px}
+.terr-head:hover{background:var(--border)}
+.terr-title{font-weight:700;font-size:14px;color:var(--accent3);flex:1;font-family:'Syne',sans-serif}
+.terr-count{font-size:11px;color:var(--muted);background:var(--bg);border:1px solid var(--border);border-radius:12px;padding:2px 8px;font-weight:600}
+.terr-chev{color:var(--muted);font-size:11px}
+
+.route-card{background:var(--surface);border:1px solid var(--border);border-radius:12px;overflow:hidden;margin-bottom:8px;transition:box-shadow .2s;box-shadow:0 1px 4px #0001}
 .route-card:hover{box-shadow:0 4px 16px #0002}
 .card-head{padding:14px 16px;cursor:pointer;display:flex;align-items:flex-start;gap:10px}
 .card-act{font-size:22px;line-height:1;flex-shrink:0}
@@ -100,6 +101,13 @@ button{font-family:'DM Sans',sans-serif;cursor:pointer;border:none;transition:al
 .empty-icon{font-size:52px;margin-bottom:14px}
 .empty p{color:var(--muted);font-size:15px}
 
+/* Export modal */
+.export-box{background:var(--bg);border:1px solid var(--border2);border-radius:8px;padding:12px;font-size:12px;font-family:'Courier New',monospace;color:var(--muted2);line-height:1.7;max-height:55vh;overflow-y:auto;white-space:pre-wrap;word-break:break-word;margin-bottom:14px}
+.export-note{font-size:12px;color:var(--muted);margin-bottom:14px;line-height:1.5}
+.copy-btn{width:100%;padding:10px;background:var(--accent);border-radius:8px;color:#fff;font-weight:700;font-size:14px;border:2px solid var(--accent3);cursor:pointer;font-family:'DM Sans',sans-serif}
+.copy-btn:hover{background:var(--accent2)}
+.copy-btn.done{background:var(--brown);border-color:#5a3d1e}
+
 .overlay{position:fixed;inset:0;background:rgba(20,12,4,.55);z-index:200;display:flex;align-items:center;justify-content:center;padding:16px}
 .modal{background:var(--surface);border-radius:16px;padding:24px;width:100%;max-width:560px;max-height:90vh;overflow-y:auto;border:1px solid var(--border2);box-shadow:0 24px 64px #0003}
 .modal-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:20px}
@@ -116,23 +124,18 @@ button{font-family:'DM Sans',sans-serif;cursor:pointer;border:none;transition:al
 .g2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
 .sec{border-top:2px dashed var(--border);margin:16px 0;padding-top:14px}
 .sec-lbl{color:var(--accent3);font-size:10px;font-weight:700;letter-spacing:1px;text-transform:uppercase;margin-bottom:12px}
-
 .seg{display:flex;background:var(--bg);border-radius:8px;padding:3px;gap:2px;border:1px solid var(--border)}
 .seg-btn{flex:1;padding:6px 8px;border-radius:6px;font-size:12px;font-weight:600;background:transparent;color:var(--muted);border:none}
 .seg-btn.on{background:var(--accent);color:#fff}
-
 .bool-row{display:flex;gap:8px}
 .bool-btn{flex:1;padding:8px;border-radius:8px;font-size:13px;font-weight:600;background:var(--bg);color:var(--muted);border:2px solid var(--border2)}
 .bool-btn.on{border-color:var(--accent);color:var(--accent);background:#d8f3dc55}
-
 .ac{position:relative}
 .ac-drop{position:absolute;top:100%;left:0;right:0;background:var(--surface);border:1px solid var(--border2);border-radius:8px;z-index:10;margin-top:4px;overflow:hidden;box-shadow:0 4px 16px #0002}
 .ac-item{padding:8px 12px;cursor:pointer;color:var(--text);font-size:14px;border-bottom:1px solid var(--border)}
 .ac-item:hover{background:var(--surface2)}
 .ac-item:last-child{border-bottom:none}
-
 .form-actions{display:flex;gap:10px;justify-content:flex-end;margin-top:8px}
-
 .setup-tip{background:#d8f3dc;border:1px solid #95d5b2;border-radius:10px;padding:12px 16px;margin-bottom:18px;color:var(--accent3);font-size:13px;line-height:1.6}
 .setup-tip code{background:#b7e4c7;padding:2px 6px;border-radius:4px;color:var(--accent3);font-size:12px}
 .div-or{display:flex;align-items:center;gap:10px;margin:16px 0;color:var(--muted);font-size:12px}
@@ -144,7 +147,6 @@ button{font-family:'DM Sans',sans-serif;cursor:pointer;border:none;transition:al
 @media(max-width:480px){
   .stats{grid-template-columns:repeat(2,1fr)}
   .g2{grid-template-columns:1fr}
-  .header-inner{gap:8px}
 }
 </style>
 </head>
@@ -156,7 +158,6 @@ import{useState,useEffect}from'https://esm.sh/preact@10.20.1/hooks';
 import htm from'https://esm.sh/htm@3.1.1';
 const html=htm.bind(h);
 
-// ── Data ──────────────────────────────────────────────────────────────────────
 const GIST_FILE='olmaps_routes.json';
 const FILTERS=[{v:'pendiente',l:'🔭 Pendientes'},{v:'hecha',l:'✅ Hechas'},{v:'favorita',l:'⭐ Favoritas'}];
 const ACTS=[{v:'senderismo',l:'🚶🏾‍♀️ Senderismo'},{v:'bici',l:'🚲 Bici'},{v:'correr',l:'🏃🏾‍♀️ Correr'}];
@@ -164,14 +165,13 @@ const DIFFS=[{v:'baja',l:'🟢 Baja'},{v:'media',l:'🟠 Media'},{v:'alta',l:'�
 const SHADOWS=['Poca','Media','Mucha'];
 const CROWDS=['Poca','Media','Mucha'];
 
-const sColor=(hecha,favorita)=>favorita?'#c49a0a':hecha?'#2d6a4f':'#6e5c42';
 const dColor=d=>d==='alta'?'#b83c0c':d==='media'?'#d4712a':'#2d6a4f';
 const aIcon=a=>a==='bici'?'🚲':a==='correr'?'🏃🏾‍♀️':'🚶🏾‍♀️';
-const newRoute=()=>({id:Date.now(),nombre:'',enlace:'',hecha:false,favorita:false,estTren:'',actividad:'senderismo',kms:'',dificultad:'media',fecha:'',fuentes:false,sombra:'Media',masificacion:'Media',notas:''});
+const aLabel=a=>a==='bici'?'Bici':a==='correr'?'Correr':'Senderismo';
+const newRoute=()=>({id:Date.now(),nombre:'',enlace:'',hecha:false,favorita:false,territorio:'',estTren:'',actividad:'senderismo',kms:'',dificultad:'media',fecha:'',fuentes:false,sombra:'Media',masificacion:'Media',notas:''});
 
 // ── GitHub Gist ───────────────────────────────────────────────────────────────
 const ghFetch=(token,path,opts={})=>fetch('https://api.github.com'+path,{...opts,headers:{Authorization:'token '+token,Accept:'application/vnd.github.v3+json','Content-Type':'application/json',...(opts.headers||{})}});
-
 async function loadGist(token,id){
   const r=await ghFetch(token,'/gists/'+id);
   if(!r.ok)throw new Error('Error '+r.status);
@@ -193,15 +193,33 @@ async function createGist(token){
   return (await r.json()).id;
 }
 
+// ── Export helper ─────────────────────────────────────────────────────────────
+function routeToText(r){
+  const lines=[];
+  lines.push('## '+( r.nombre||'Sin nombre'));
+  const estado=(r.hecha?'✅ Hecha':'🔭 Pendiente')+(r.favorita?' ⭐ Favorita':'');
+  lines.push('Estado: '+estado);
+  lines.push('Actividad: '+aLabel(r.actividad));
+  if(r.territorio)lines.push('Territorio: '+r.territorio);
+  if(r.kms)lines.push('Kms: '+r.kms+' km');
+  lines.push('Dificultad: '+( r.dificultad==='alta'?'Alta':r.dificultad==='media'?'Media':'Baja'));
+  if(r.estTren)lines.push('Estación: '+r.estTren);
+  if(r.fecha)lines.push('Fecha realización: '+r.fecha);
+  lines.push('Fuentes: '+(r.fuentes?'Sí':'No'));
+  lines.push('Sombra: '+r.sombra);
+  lines.push('Masificación: '+r.masificacion);
+  if(r.notas)lines.push('Notas: '+r.notas);
+  if(r.enlace)lines.push('Enlace: '+r.enlace);
+  return lines.join('\n');
+}
+
 // ── Small components ──────────────────────────────────────────────────────────
 function Tag({children,color='#6e5c42'}){
   return html`<span class="tag" style=${{background:color+'18',color,border:'1px solid '+color+'44'}}>${children}</span>`;
 }
-
 function Seg({options,value,onChange}){
   return html`<div class="seg">${options.map(o=>html`<button class=${'seg-btn'+(value===o.v?' on':'')} onClick=${()=>onChange(o.v)}>${o.l}</button>`)}</div>`;
 }
-
 function Modal({title,onClose,children}){
   return html`
     <div class="overlay" onClick=${onClose}>
@@ -214,7 +232,6 @@ function Modal({title,onClose,children}){
       </div>
     </div>`;
 }
-
 function AcField({label,value,onChange,suggestions,placeholder}){
   const [show,setShow]=useState(false);
   const opts=suggestions.filter(s=>s.toLowerCase().includes((value||'').toLowerCase())&&s!==value);
@@ -235,8 +252,27 @@ function AcField({label,value,onChange,suggestions,placeholder}){
     </div>`;
 }
 
+// ── Export modal ──────────────────────────────────────────────────────────────
+function ExportModal({routes,onClose}){
+  const [copied,setCopied]=useState(false);
+  const text=routes.map(routeToText).join('\n\n---\n\n');
+  const doCopy=()=>{
+    navigator.clipboard.writeText(text).then(()=>{setCopied(true);setTimeout(()=>setCopied(false),2500);});
+  };
+  return html`
+    <${Modal} title="📤 Exportar rutas" onClose=${onClose}>
+      <p class="export-note">
+        ${routes.length} ruta${routes.length!==1?'s':''} exportada${routes.length!==1?'s':''}. Copia este texto y pégalo en una IA para pedir sugerencias de rutas nuevas.
+      </p>
+      <div class="export-box">${text}</div>
+      <button class=${'copy-btn'+(copied?' done':'')} onClick=${doCopy}>
+        ${copied?'✅ ¡Copiado!':'📋 Copiar al portapapeles'}
+      </button>
+    </${Modal}>`;
+}
+
 // ── Route form ────────────────────────────────────────────────────────────────
-function RouteForm({initial,allTren,onSave,onCancel}){
+function RouteForm({initial,allTren,allTerr,onSave,onCancel}){
   const [r,setR]=useState(initial);
   const set=(k,v)=>setR(p=>({...p,[k]:v}));
   return html`
@@ -266,6 +302,7 @@ function RouteForm({initial,allTren,onSave,onCancel}){
           </select>
         </div>
       </div>
+      <${AcField} label="🌍 Territorio" value=${r.territorio} onChange=${v=>set('territorio',v)} suggestions=${allTerr} placeholder="Ej: Madrid, Cantabria, Asturias…"/>
       <${AcField} label="🚂 Estación de tren / bus" value=${r.estTren} onChange=${v=>set('estTren',v)} suggestions=${allTren} placeholder="Ej: Colmenar Viejo, Cercedilla…"/>
       <div class="sec">
         <p class="sec-lbl">🌿 Entorno</p>
@@ -343,13 +380,28 @@ function RouteCard({route,onEdit,onDelete}){
     </div>`;
 }
 
+// ── Territory group ───────────────────────────────────────────────────────────
+function TerrGroup({name,routes,defaultOpen,onEdit,onDelete}){
+  const [open,setOpen]=useState(defaultOpen);
+  return html`
+    <div class="terr-group">
+      <div class="terr-head" onClick=${()=>setOpen(p=>!p)}>
+        <span class="terr-title">🌍 ${name||'Sin territorio'}</span>
+        <span class="terr-count">${routes.length} ruta${routes.length!==1?'s':''}</span>
+        <span class="terr-chev">${open?'▲':'▼'}</span>
+      </div>
+      ${open&&routes.map(r=>html`
+        <${RouteCard} key=${r.id} route=${r}
+          onEdit=${onEdit} onDelete=${onDelete}/>`)}
+    </div>`;
+}
+
 // ── Gist setup ────────────────────────────────────────────────────────────────
 function GistSetup({currentGistId,onSave,onDisconnect}){
   const [token,setToken]=useState('');
   const [gistId,setGistId]=useState('');
   const [loading,setLoading]=useState(false);
   const [error,setError]=useState('');
-
   const doCreate=async()=>{
     setLoading(true);setError('');
     try{const id=await createGist(token);onSave(token,id);}
@@ -362,7 +414,6 @@ function GistSetup({currentGistId,onSave,onDisconnect}){
     catch{setError('No se pudo conectar. Revisa el token y el ID.');}
     setLoading(false);
   };
-
   return html`
     <div>
       ${currentGistId&&html`
@@ -401,10 +452,12 @@ function App(){
   const [syncErr,setSyncErr]=useState('');
   const [showSetup,setShowSetup]=useState(false);
   const [showForm,setShowForm]=useState(false);
+  const [showExport,setShowExport]=useState(false);
   const [editRoute,setEditRoute]=useState(null);
   const [fState,setFState]=useState('all');
   const [fAct,setFAct]=useState('all');
   const [fTren,setFTren]=useState('all');
+  const [fTerr,setFTerr]=useState('all');
   const [search,setSearch]=useState('');
 
   const connected=!!(token&&gistId);
@@ -421,9 +474,9 @@ function App(){
       const migrated=d.map(r=>{
         if(r.estado!==undefined){
           const {estado,...rest}=r;
-          return {...rest,hecha:estado==='hecha',favorita:estado==='favorita'};
+          return {...rest,hecha:estado==='hecha',favorita:estado==='favorita',territorio:rest.territorio||''};
         }
-        return r;
+        return {...r,territorio:r.territorio||''};
       });
       setRoutes(migrated);setLastSync(new Date());
     }
@@ -460,26 +513,41 @@ function App(){
   }
 
   const allTren=[...new Set(routes.map(r=>r.estTren).filter(Boolean))].sort();
+  const allTerr=[...new Set(routes.map(r=>r.territorio).filter(Boolean))].sort();
 
-  const filtered=routes.filter(r=>{
-    if(fState==='pendiente'&&r.hecha)return false;
-    if(fState==='hecha'&&!r.hecha)return false;
-    if(fState==='favorita'&&!r.favorita)return false;
-    if(fAct!=='all'&&r.actividad!==fAct)return false;
-    if(fTren!=='all'&&r.estTren!==fTren)return false;
-    if(search&&!r.nombre.toLowerCase().includes(search.toLowerCase()))return false;
-    return true;
-  }).slice().sort((a,b)=>{
+  // Sort logic
+  const sortRoutes=list=>list.slice().sort((a,b)=>{
     if(a.hecha&&b.hecha){
-      // hechas: más recientes arriba, más antiguas abajo, sin fecha al final
       if(!a.fecha&&!b.fecha)return 0;
       if(!a.fecha)return 1;
       if(!b.fecha)return -1;
       return b.fecha.localeCompare(a.fecha);
     }
-    if(a.hecha!==b.hecha)return a.hecha?1:-1; // pendientes arriba, hechas abajo
-    // pendientes: por orden añadido, la última añadida arriba
+    if(a.hecha!==b.hecha)return a.hecha?1:-1;
     return b.id-a.id;
+  });
+
+  // Filter
+  const filtered=sortRoutes(routes.filter(r=>{
+    if(fState==='pendiente'&&r.hecha)return false;
+    if(fState==='hecha'&&!r.hecha)return false;
+    if(fState==='favorita'&&!r.favorita)return false;
+    if(fAct!=='all'&&r.actividad!==fAct)return false;
+    if(fTren!=='all'&&r.estTren!==fTren)return false;
+    if(fTerr!=='all'&&r.territorio!==fTerr)return false;
+    if(search&&!r.nombre.toLowerCase().includes(search.toLowerCase()))return false;
+    return true;
+  }));
+
+  // Group by territory
+  const grouped=[];
+  const seenTerr=new Set();
+  const terrOrder=[...allTerr,''];
+  terrOrder.forEach(t=>{
+    if(seenTerr.has(t))return;
+    seenTerr.add(t);
+    const group=filtered.filter(r=>r.territorio===t);
+    if(group.length>0)grouped.push({terr:t,routes:group});
   });
 
   const stats={
@@ -491,6 +559,9 @@ function App(){
 
   const syncLabel=syncing?'⏳ Sincronizando…':syncErr?syncErr:lastSync?('✅ Sync '+lastSync.toLocaleTimeString('es',{hour:'2-digit',minute:'2-digit'})):connected?'🔗 Conectado':'⚠️ Sin conexión';
 
+  // Default open = 'Madrid' if exists, else first territory
+  const defaultOpenTerr=allTerr.includes('Madrid')?'Madrid':(allTerr[0]||'');
+
   return html`
     <div>
       <header class="header">
@@ -499,9 +570,12 @@ function App(){
             <h1>🗺️ <span>Ol</span>Maps</h1>
             <p class=${syncErr?'err':''}>${syncLabel}</p>
           </div>
-          ${connected&&html`<button class="btn-ghost" onClick=${load}>↻ Sync</button>`}
-          <button class="btn-ghost" onClick=${()=>setShowSetup(true)}>⚙️</button>
-          <button class="btn-primary" onClick=${()=>{setEditRoute(null);setShowForm(true);}}>+ Nueva</button>
+          <div class="header-btns">
+            ${connected&&html`<button class="btn-ghost" onClick=${load}>↻</button>`}
+            <button class="btn-export" onClick=${()=>setShowExport(true)}>📤</button>
+            <button class="btn-ghost" onClick=${()=>setShowSetup(true)}>⚙️</button>
+            <button class="btn-primary" onClick=${()=>{setEditRoute(null);setShowForm(true);}}>+ Nueva</button>
+          </div>
         </div>
       </header>
 
@@ -531,6 +605,12 @@ function App(){
             ${[{v:'all',l:'🗂️ Todas'},...ACTS].map(a=>html`
               <button class=${'chip'+(fAct===a.v?' ca':'')} onClick=${()=>setFAct(a.v)}>${a.l}</button>`)}
           </div>
+          ${allTerr.length>0&&html`
+            <div class="filter-row">
+              <button class=${'chip'+(fTerr==='all'?' cz':'')} onClick=${()=>setFTerr('all')}>🌍 Todos</button>
+              ${allTerr.map(t=>html`
+                <button class=${'chip'+(fTerr===t?' cz':'')} onClick=${()=>setFTerr(t)}>${t}</button>`)}
+            </div>`}
           ${allTren.length>0&&html`
             <div class="filter-row">
               <button class=${'chip'+(fTren==='all'?' ct':'')} onClick=${()=>setFTren('all')}>🚂 Todas</button>
@@ -544,21 +624,32 @@ function App(){
             <div class="empty-icon">🗺️</div>
             <p>${routes.length===0?'¡Añade tu primera ruta!':'No hay rutas con estos filtros.'}</p>
           </div>
-        `:filtered.map(r=>html`
-          <${RouteCard} key=${r.id} route=${r}
+        `:grouped.length===1&&grouped[0].terr===''?
+          filtered.map(r=>html`<${RouteCard} key=${r.id} route=${r}
+            onEdit=${route=>{setEditRoute(route);setShowForm(true);}}
+            onDelete=${handleDelete}/>`)
+        :grouped.map(g=>html`
+          <${TerrGroup}
+            key=${g.terr}
+            name=${g.terr}
+            routes=${g.routes}
+            defaultOpen=${g.terr===defaultOpenTerr||g.terr===''}
             onEdit=${route=>{setEditRoute(route);setShowForm(true);}}
             onDelete=${handleDelete}/>`)}
       </main>
 
       ${showForm&&html`
         <${Modal} title=${editRoute?'✏️ Editar ruta':'✨ Nueva ruta'} onClose=${()=>{setShowForm(false);setEditRoute(null);}}>
-          <${RouteForm} initial=${editRoute||newRoute()} allTren=${allTren} onSave=${handleSave} onCancel=${()=>{setShowForm(false);setEditRoute(null);}}/>
+          <${RouteForm} initial=${editRoute||newRoute()} allTren=${allTren} allTerr=${allTerr} onSave=${handleSave} onCancel=${()=>{setShowForm(false);setEditRoute(null);}}/>
         </${Modal}>`}
 
       ${showSetup&&html`
         <${Modal} title="⚙️ Configurar sincronización" onClose=${()=>setShowSetup(false)}>
           <${GistSetup} currentGistId=${gistId} onSave=${handleSetupSave} onDisconnect=${handleDisconnect}/>
         </${Modal}>`}
+
+      ${showExport&&html`
+        <${ExportModal} routes=${filtered.length>0?filtered:routes} onClose=${()=>setShowExport(false)}/>`}
     </div>`;
 }
 

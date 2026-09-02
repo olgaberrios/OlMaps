@@ -426,7 +426,7 @@ function TrenTerrGroup({name,stations,defaultOpen,fTren,setFTren}){
       </div>
       ${open&&html`<div class="filter-row" style=${{paddingLeft:'8px'}}>
         ${stations.map(t=>html`
-          <button class=${'chip'+(fTren===t?' ct':'')} onClick=${()=>setFTren(t)}>${t}</button>`)}
+          <button class=${'chip'+(fTren===t?' ct':'')} onClick=${()=>setFTren(fTren===t?'all':t)}>${t}</button>`)}
       </div>`}
     </div>`;
 }
@@ -640,12 +640,7 @@ function App(){
             ${[{v:'all',l:'🗂️ Todas'},...ACTS].map(a=>html`
               <button class=${'chip'+(fAct===a.v?' ca':'')} onClick=${()=>setFAct(a.v)}>${a.l}</button>`)}
           </div>
-          ${allTerr.length>0&&html`
-            <div class="filter-row">
-              <button class=${'chip'+(fTerr==='all'?' cz':'')} onClick=${()=>setFTerr('all')}>🌍 Todos</button>
-              ${allTerr.map(t=>html`
-                <button class=${'chip'+(fTerr===t?' cz':'')} onClick=${()=>setFTerr(t)}>${t}</button>`)}
-            </div>`}
+
           ${allTren.length>0&&html`<${TrenFilter} allTren=${allTren} allTerr=${allTerr} routes=${routes} defaultOpenTerr=${defaultOpenTerr} fTren=${fTren} setFTren=${setFTren}/>`}
         </div>
 
